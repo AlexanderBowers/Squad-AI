@@ -26,16 +26,19 @@ public:
 	
 	virtual void Tick(float DeltatTime) override;
 
-	void MoveUpCommand(class UInputComponent* PlayerInput);
+	void MoveUpCommand();
 
-	virtual void SetupInputComponent(UInputComponent* PlayerInputComponent) override;
+	virtual void SetupInputComponent() override;
 
 private:
 	UPROPERTY(EditAnywhere)
 	float MaxRange = 1000;
+	UPROPERTY(EditAnywhere)
+	//UInputComponent InputComponent;
 
 	FVector CameraLocation;
 	FRotator CameraRotation;
 	APawn* ControlledPawn;
+	
 
 };

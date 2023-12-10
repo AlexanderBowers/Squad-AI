@@ -10,9 +10,6 @@ void ASquadPlayerController::BeginPlay()
 {
 	if (ASquadPlayerController::GetPawn()) {
 		ControlledPawn = GetPawn();
-		
-		
-		
 
 	}
 }
@@ -24,16 +21,18 @@ void ASquadPlayerController::Tick(float DeltatTime)
 	DrawDebugLine(GetWorld(), CameraLocation, End, FColor::Red, false, 0, 10);
 }
 
-void ASquadPlayerController::MoveUpCommand(UInputComponent* playerinput)
+void ASquadPlayerController::MoveUpCommand()
 {
 	if (ControlledPawn) {
 		UE_LOG(LogTemp, Display, TEXT("Works!"));
 	}
 }
 
-void ASquadPlayerController::SetupInputComponent(UInputComponent* PlayerInputComponent) override
+void ASquadPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	PlayerInputComponent->BindAxis(FName("MoveUp"), this, &ASquadPlayerController::MoveUpCommand);
+	InputComponent->BindAction("MoveUp", IE_Pressed, &ASquadPlayerController::MoveUpCommand, "1");
+	
+
 
 }
