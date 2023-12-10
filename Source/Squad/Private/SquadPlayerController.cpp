@@ -24,7 +24,17 @@ void ASquadPlayerController::MoveUpCommand()
 		UE_LOG(LogTemp, Display, TEXT("Works!"));
 		GetPlayerViewPoint(CameraLocation, CameraRotation);
 		FVector End = CameraLocation + CameraRotation.Vector() * MaxRange;
-		DrawDebugSphere(GetWorld(), End, 50, 10, FColor::Red, true, 60, 0, 20);
+
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(ControlledPawn);
+
+		FHitResult HitResult;
+
+		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, End, ECC_Visibility, CollisionParams);
+			if (bHit)
+			{
+				DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, true, 60, 0, 1.f);
+			}
 	}
 }
 
