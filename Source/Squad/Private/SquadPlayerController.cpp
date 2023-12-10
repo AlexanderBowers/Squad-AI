@@ -24,7 +24,7 @@ void ASquadPlayerController::MoveUpCommand()
 		UE_LOG(LogTemp, Display, TEXT("Works!"));
 		GetPlayerViewPoint(CameraLocation, CameraRotation);
 		FVector End = CameraLocation + CameraRotation.Vector() * MaxRange;
-		DrawDebugLine(GetWorld(), CameraLocation, End, FColor::Red, false, 0, 10);
+		DrawDebugSphere(GetWorld(), End, 50, 10, FColor::Red, true, 60, 0, 20);
 	}
 }
 
