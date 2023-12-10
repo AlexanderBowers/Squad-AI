@@ -4,28 +4,36 @@
 #include "SquadPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Components/InputComponent.h"
 
 void ASquadPlayerController::BeginPlay()
 {
 	if (ASquadPlayerController::GetPawn()) {
 		ControlledPawn = GetPawn();
-		GetPlayerViewPoint(CameraLocation, CameraRotation);
+		
+		
+		
+
 	}
 }
 
 void ASquadPlayerController::Tick(float DeltatTime)
 {
-	DrawDebugPoint(GetWorld(), CameraLocation, 50, FColor::Red, false, 30, 1);
+	GetPlayerViewPoint(CameraLocation, CameraRotation);
+	FVector End = CameraLocation + CameraRotation.Vector() * MaxRange;
+	DrawDebugLine(GetWorld(), CameraLocation, End, FColor::Red, false, 0, 10);
 }
 
-void ASquadPlayerController::MoveUpCommand(UInputComponent* PlayerInput)
+void ASquadPlayerController::MoveUpCommand(UInputComponent* playerinput)
 {
 	if (ControlledPawn) {
-
-		
-		//UActorComponent &Camera = GetComponentByClass<ControlledPawn>(UCameraComponent);
-		//Do line trace from camera to first collision; draw a debug line at location.
-		
-		
+		UE_LOG(LogTemp, Display, TEXT("Works!"));
 	}
+}
+
+void ASquadPlayerController::SetupInputComponent(UInputComponent* PlayerInputComponent) override
+{
+	Super::SetupInputComponent();
+	PlayerInputComponent->BindAxis(FName("MoveUp"), this, &ASquadPlayerController::MoveUpCommand);
+
 }

@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "SquadPlayerController.generated.h"
 
+
 /**
  * 
  */
@@ -17,10 +18,7 @@ class SQUAD_API ASquadPlayerController : public APlayerController
 
 public:
 	//APlayerController();
-	FVector CameraLocation;
-	FRotator CameraRotation;
-	APawn* ControlledPawn;
-
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -28,5 +26,16 @@ public:
 	
 	virtual void Tick(float DeltatTime) override;
 
-	virtual void MoveUpCommand(class UInputComponent* PlayerInput);
+	void MoveUpCommand(class UInputComponent* PlayerInput);
+
+	virtual void SetupInputComponent(UInputComponent* PlayerInputComponent) override;
+
+private:
+	UPROPERTY(EditAnywhere)
+	float MaxRange = 1000;
+
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	APawn* ControlledPawn;
+
 };
