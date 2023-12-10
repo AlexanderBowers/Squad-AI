@@ -26,6 +26,7 @@ public:
 	
 	virtual void Tick(float DeltatTime) override;
 
+	UFUNCTION()
 	void MoveUpCommand();
 
 	virtual void SetupInputComponent() override;
