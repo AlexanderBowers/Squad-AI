@@ -3,10 +3,10 @@
 
 #include "SquadAIController.h"
 #include "SquadPlayerController.h"
-#include "Engine/VisualLogger.h"
 
 void ASquadAIController::BeginPlay()
 {
+	Super::BeginPlay();
 	if (GetWorld()->GetFirstPlayerController())
 	{
 		PlayerController = Cast<ASquadPlayerController>(GetWorld()->GetFirstPlayerController());
@@ -18,7 +18,6 @@ void ASquadAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	UE_LOG(LogTemp, Warning, TEXT("What?"))
-		VLOG(TEXT("Test"), TEXT("Testing!"));
 }
 
 void ASquadAIController::MoveToCommand(FVector CommandLocation)
