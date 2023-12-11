@@ -9,6 +9,7 @@
 
 void ASquadPlayerController::BeginPlay()
 {
+	Super::BeginPlay();
 	if (ASquadPlayerController::GetPawn()) {
 		ControlledPawn = GetPawn();
 	}
