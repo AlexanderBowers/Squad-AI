@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "SquadPlayerController.h"
 #include "SquadAIController.generated.h"
 
 /**
@@ -22,7 +23,8 @@ protected:
 	void MoveToCommand(FVector CommandLocation);
 
 private:
-	APlayerController* PlayerController;
+	UPROPERTY()
+	ASquadPlayerController *PlayerController;
 };
 
 
