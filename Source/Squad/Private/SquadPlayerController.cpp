@@ -20,8 +20,10 @@ void ASquadPlayerController::Tick(float DeltatTime)
 
 void ASquadPlayerController::MoveUpCommand()
 {
+	//Line trace to a location. If it hits something, add the hit result vector to a list.
+	//to-do: AI need to check for items in the array then go to them. When they're there, remove the location from the array.
+	//future: struct to store vector and type? (move, cover, shoot, breach)
 	if (ControlledPawn) {
-		UE_LOG(LogTemp, Display, TEXT("Works!"));
 		GetPlayerViewPoint(CameraLocation, CameraRotation);
 		FVector End = CameraLocation + CameraRotation.Vector() * MaxRange;
 
@@ -29,12 +31,18 @@ void ASquadPlayerController::MoveUpCommand()
 		CollisionParams.AddIgnoredActor(ControlledPawn);
 
 		FHitResult HitResult;
-
 		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, End, ECC_Visibility, CollisionParams);
-			if (bHit)
-			{
-				DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, true, 60, 0, 1.f);
-			}
+		if (bHit)
+		{
+			Commands.Add(HitResult.Location);
+			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, true, 60, 0, 1.f);
+		}
+		FString ArrayAsString;
+		for (FVector& Element : Commands)
+		{
+			ArrayAsString.Append(FString::Printf(TEXT("(X=%.2f, Y=%.2f, Z=%.2f), "), Element.X, Element.Y, Element.Z));
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Vector Array Contents: %s"), *ArrayAsString);
 	}
 }
 
