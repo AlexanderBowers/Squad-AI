@@ -6,6 +6,7 @@
 #include "DrawDebugHelpers.h"
 #include "Components/InputComponent.h"
 #include "Engine/Engine.h"
+#include "CommandPoint.h"
 
 void ASquadPlayerController::BeginPlay()
 {
@@ -35,15 +36,20 @@ void ASquadPlayerController::MoveUpCommand()
 		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, End, ECC_Visibility, CollisionParams);
 		if (bHit)
 		{
-			Commands.Add(HitResult.Location);
+			//just testing move for now. next step is checking if there's a component. if there is, which type it is.
+			UCommandPoint Command;
+			Command.Location = HitResult.Location;
+			Command.Type = TEXT("Move");
+
+			CommandList.Add(Command);
 			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, true, 60, 0, 1.f);
 		}
 		FString ArrayAsString;
-		for (FVector& Element : Commands)
+		for (UCommandPoint& Element : CommandList)
 		{
-			ArrayAsString.Append(FString::Printf(TEXT("(X=%.2f, Y=%.2f, Z=%.2f), "), Element.X, Element.Y, Element.Z));
+			ArrayAsString.Append(FString::Printf(TEXT("(X=%.2f, Y=%.2f, Z=%.2f), "), Element.Location.X, Element.Location.Y, Element.Location.Z));
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Vector Array Contents: %s"), *ArrayAsString);
+		//UE_LOG(LogTemp, Warning, TEXT("Vector Array Contents: %s"), *ArrayAsString);
 	}
 }
 

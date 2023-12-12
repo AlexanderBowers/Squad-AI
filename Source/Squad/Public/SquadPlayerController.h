@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "CommandPoint.h"
 #include "SquadPlayerController.generated.h"
-
 
 /**
  * 
@@ -32,14 +32,13 @@ public:
 	virtual void SetupInputComponent() override;
 
 	UPROPERTY(EditAnywhere)
-	TArray<FVector> Commands;
+	TArray<UCommandPoint> *CommandList;
 
 private:
 
 	UPROPERTY(EditAnywhere)
 	float MaxRange = 1000;
 	UPROPERTY(EditAnywhere)
-	//UInputComponent InputComponent;
 
 	FVector CameraLocation;
 	FRotator CameraRotation;

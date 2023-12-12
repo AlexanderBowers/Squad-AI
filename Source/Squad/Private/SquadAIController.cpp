@@ -5,6 +5,7 @@
 #include "SquadPlayerController.h"
 #include "Engine/EngineTypes.h"
 #include "TimerManager.h"
+#include "CommandPoint.h"
 
 void ASquadAIController::BeginPlay()
 {
@@ -23,9 +24,9 @@ void ASquadAIController::Tick(float DeltaTime)
 	if (PlayerController)
 	{
 		//If there are any vectors in the command list, go to it and remove it from the list.
-		if (PlayerController->Commands.Num() > 0)
+		if (PlayerController->CommandList.Num() > 0)
 		{
-			FVector &Location = PlayerController->Commands.Last();
+			FVector &Location = PlayerController->CommandList.Last();
 			MoveToCommand(Location);
 			if (&Location)
 			{
@@ -43,7 +44,7 @@ void ASquadAIController::MoveToCommand(FVector CommandLocation)
 }
 
 
-	//TODO: Allow multiple Squad AI to respond to command. 
+	//TODO: Allow multiple Squad AI to respond to command. DONE!
 	//Allow multiple types of commands to be implemented (cover, move, suppress)
 	//Assign points in environment for cover and suppress; otherwise move.
 
