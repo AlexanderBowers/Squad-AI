@@ -25,12 +25,12 @@ void ASquadAIController::Tick(float DeltaTime)
 		//If there are any vectors in the command list, go to it and remove it from the list.
 		if (PlayerController->Commands.Num() > 0)
 		{
-			FVector &Location = PlayerController->Commands[0];
+			FVector &Location = PlayerController->Commands.Last();
 			MoveToCommand(Location);
 			if (&Location)
 			{
 				
-				PlayerController->Commands.RemoveAt(0);
+				//PlayerController->Commands.RemoveAt(0);
 				
 			}
 		}
@@ -51,7 +51,6 @@ void ASquadAIController::MoveToCommand(FVector CommandLocation)
 
 
 //Perhaps multiple AI can't respond to the command because it's getting removed too quickly? Should I use a timer?
-// 
 // 
 	////Timers need a handle, delegate, and float. Delegate is the function and in this case is a lambda function.
 	//FTimerHandle DelayTimerHandle;
