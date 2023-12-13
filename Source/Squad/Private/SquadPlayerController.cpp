@@ -22,9 +22,9 @@ void ASquadPlayerController::Tick(float DeltatTime)
 
 void ASquadPlayerController::MoveUpCommand()
 {
-	//Line trace to a location. If it hits something, add the hit result vector to a list.
-	//to-do: AI need to check for items in the array then go to them. When they're there, remove the location from the array.
-	//future: struct to store vector and type? (move, cover, shoot, breach)
+	//Line trace to a location. On collision, create a FCommandPointy then add it to the list.
+	//TODO: Check if the hit object has a CommandComponent. If it does, create a FCommandPointy with its location and type.
+
 	if (ControlledPawn) {
 		GetPlayerViewPoint(CameraLocation, CameraRotation);
 		FVector End = CameraLocation + CameraRotation.Vector() * MaxRange;
