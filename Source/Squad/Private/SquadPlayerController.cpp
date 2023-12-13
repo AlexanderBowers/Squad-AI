@@ -6,6 +6,7 @@
 #include "DrawDebugHelpers.h"
 #include "Components/InputComponent.h"
 #include "Engine/Engine.h"
+#include "CommandComponent.h"
 //#include "CommandPoint.h"
 
 void ASquadPlayerController::BeginPlay()
@@ -36,20 +37,23 @@ void ASquadPlayerController::MoveUpCommand()
 		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, End, ECC_Visibility, CollisionParams);
 		if (bHit)
 		{
-			//just testing move for now. next step is checking if there's a component. if there is, which type it is.
-			FCommandPointy Command;
-			Command.Location = HitResult.Location;
-			Command.Type = TEXT("Move");
+			//if we get a collision, create a FCommandPointy. 
+			//If the collided actor has a Command Component, get its type and add to the CommandList.
+			FCommandPointy CommandPoint;
+			CommandPoint.Location = HitResult.Location;
+			AActor* Actor = HitResult.GetActor();
+			if (Actor)
+			{
+				UActorComponent *Component = Actor->FindComponentByClass<UCommandComponent>();
 
-			CommandList.Add(Command);
-			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, true, 60, 0, 1.f);
+				//to-do: check component reference and look at its tag.
+			}
+
+			CommandPoint.Type = TEXT("Move");
+
+			CommandList.Add(CommandPoint);
+			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, false, 60, 0, 1.f);
 		}
-		FString ArrayAsString;
-		for (FCommandPointy& Element : CommandList)
-		{
-			ArrayAsString.Append(FString::Printf(TEXT("(X=%.2f, Y=%.2f, Z=%.2f), "), Element.Location.X, Element.Location.Y, Element.Location.Z));
-		}
-		//UE_LOG(LogTemp, Warning, TEXT("Vector Array Contents: %s"), *ArrayAsString);
 	}
 }
 
