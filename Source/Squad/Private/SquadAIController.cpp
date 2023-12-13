@@ -26,12 +26,12 @@ void ASquadAIController::Tick(float DeltaTime)
 		//If there are any vectors in the command list, go to it and remove it from the list.
 		if (PlayerController->CommandList.Num() > 0)
 		{
-			FVector &Location = PlayerController->CommandList.Last();
+			FVector &Location = PlayerController->CommandList.Last().Location;
 			MoveToCommand(Location);
 			if (&Location)
 			{
 				
-				//PlayerController->Commands.RemoveAt(0);
+				//PlayerController->CommandList.RemoveAt(0);
 				
 			}
 		}

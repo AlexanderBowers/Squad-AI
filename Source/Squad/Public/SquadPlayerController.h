@@ -4,12 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "CommandPoint.h"
+//#include "CommandPoint.h"
 #include "SquadPlayerController.generated.h"
 
 /**
  * 
  */
+//CHANGE ALL CommandPoint REFERENCES TO FCommandPointy UNTIL RENAME IS SUCCESSFUL
+USTRUCT(BlueprintType)
+struct FCommandPointy
+{
+	GENERATED_USTRUCT_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector Location;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Type;
+};
 UCLASS()
 class SQUAD_API ASquadPlayerController : public APlayerController
 {
@@ -32,7 +43,9 @@ public:
 	virtual void SetupInputComponent() override;
 
 	UPROPERTY(EditAnywhere)
-	TArray<UCommandPoint> *CommandList;
+	TArray<FCommandPointy> CommandList;
+
+	
 
 private:
 
@@ -44,5 +57,7 @@ private:
 	FRotator CameraRotation;
 	APawn* ControlledPawn;
 	
-
 };
+
+
+
