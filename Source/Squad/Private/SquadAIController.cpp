@@ -6,6 +6,7 @@
 #include "Engine/EngineTypes.h"
 #include "TimerManager.h"
 #include "CommandPoint.h"
+#include "SquadPlayerController.h"
 
 void ASquadAIController::BeginPlay()
 {
@@ -26,14 +27,10 @@ void ASquadAIController::Tick(float DeltaTime)
 		//If there are any vectors in the command list, go to it and remove it from the list.
 		if (PlayerController->CommandList.Num() > 0)
 		{
-			FVector &Location = PlayerController->CommandList.Last().Location;
-			//UE_LOG(LogTemp, Warning, TEXT("AI sees Location as: %s"), *Location.ToString());
-			if (&Location)
-			{
-				MoveToCommand(Location);
-				//PlayerController->CommandList.RemoveAt(0);
-				
-			}
+
+			FCommandPointy CommandPoint = PlayerController->CommandList.Last();
+			MoveToCommand(CommandPoint.Location);
+			
 		}
 	}
 }
