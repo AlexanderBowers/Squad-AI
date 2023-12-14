@@ -17,14 +17,55 @@ void ASquadPlayerController::BeginPlay()
 	}
 }
 
+
+FCommandPointy ASquadPlayerController::CreateCommandPointy(FHitResult HitResult)
+{
+	//if we get a collision, create a FCommandPointy. 
+	//If the collided actor has a Command Component, get its type and add to the CommandList.
+
+	FCommandPointy CommandPoint;
+	CommandPoint.Location = HitResult.Location;
+
+	AActor* Actor = HitResult.GetActor();
+	if (Actor)
+	{
+		UActorComponent* Component = Actor->FindComponentByClass<UCommandComponent>();
+		if (Component)
+		{
+			FString TagType = Component->ComponentTags[0].ToString();
+			if (TagType.Len() > 0)
+			{
+				CommandPoint.Type = FName(TagType);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Found Component but not tag!"))
+				CommandPoint.Type = TEXT("Move");
+			}
+		}
+		else //If there is no component, default the type to move.
+		{
+			CommandPoint.Type = TEXT("Move");
+		}
+		FString CommandPointString = CommandPoint.Location.ToString();
+		FString TypeString = CommandPoint.Type.ToString();
+		UE_LOG(LogTemp, Warning, TEXT("Location: %s ; Type: %s "), *CommandPointString, *TypeString);
+		return FCommandPointy();
+	}
+	//If there is no actor hit, return to the player
+	CommandPoint.Location = this->GetPawn()->GetActorLocation();
+	CommandPoint.Type = TEXT("Move");
+	return FCommandPointy();
+}
+
 void ASquadPlayerController::Tick(float DeltatTime)
 {
+
 }
 
 void ASquadPlayerController::MoveUpCommand()
 {
 	//Line trace to a location. On collision, create a FCommandPointy then add it to the list.
-	//TODO: Check if the hit object has a CommandComponent. If it does, create a FCommandPointy with its location and type.
 
 	if (ControlledPawn) {
 		GetPlayerViewPoint(CameraLocation, CameraRotation);
@@ -39,18 +80,9 @@ void ASquadPlayerController::MoveUpCommand()
 		{
 			//if we get a collision, create a FCommandPointy. 
 			//If the collided actor has a Command Component, get its type and add to the CommandList.
-			FCommandPointy CommandPoint;
-			CommandPoint.Location = HitResult.Location;
-			AActor* Actor = HitResult.GetActor();
-			if (Actor)
-			{
-				UActorComponent *Component = Actor->FindComponentByClass<UCommandComponent>();
 
-				//to-do: check component reference and look at its tag.
-			}
-
-			CommandPoint.Type = TEXT("Move");
-
+			FCommandPointy CommandPoint = CreateCommandPointy(HitResult);
+			//UE_LOG(LogTemp, Warning, TEXT("Command Point: %s"), CommandPoint.Location.ToString());
 			CommandList.Add(CommandPoint);
 			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, false, 60, 0, 1.f);
 		}

@@ -11,6 +11,7 @@
  * 
  */
 //CHANGE ALL CommandPoint REFERENCES TO FCommandPointy UNTIL RENAME IS SUCCESSFUL
+
 USTRUCT(BlueprintType)
 struct FCommandPointy
 {
@@ -21,6 +22,7 @@ struct FCommandPointy
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Type;
 };
+
 UCLASS()
 class SQUAD_API ASquadPlayerController : public APlayerController
 {
@@ -34,6 +36,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UFUNCTION()
+	FCommandPointy CreateCommandPointy(FHitResult HitResult);
 	
 	virtual void Tick(float DeltatTime) override;
 
