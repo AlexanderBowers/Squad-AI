@@ -38,6 +38,10 @@ protected:
 public:
 	UFUNCTION()
 	FCommandPointy CreateCommandPointy(FHitResult HitResult);
+	UFUNCTION()
+	FCommandPointy AssignLocation(FCommandPointy CommandPoint, FHitResult HitResult);
+	UFUNCTION()
+	FCommandPointy AssignType(FCommandPointy CommandPoint, FHitResult HitResult);
 	
 	virtual void Tick(float DeltatTime) override;
 

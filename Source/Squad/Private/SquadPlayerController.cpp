@@ -24,8 +24,19 @@ FCommandPointy ASquadPlayerController::CreateCommandPointy(FHitResult HitResult)
 	//If the collided actor has a Command Component, get its type and add to the CommandList.
 
 	FCommandPointy CommandPoint;
-	CommandPoint.Location = HitResult.Location;
+	CommandPoint = AssignLocation(CommandPoint, HitResult);
+	CommandPoint = AssignType(CommandPoint, HitResult);
+	return CommandPoint;
+}
 
+FCommandPointy ASquadPlayerController::AssignLocation(FCommandPointy CommandPoint, FHitResult HitResult)
+{
+	CommandPoint.Location = HitResult.Location;
+	return CommandPoint;
+}
+
+FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, FHitResult HitResult)
+{
 	AActor* Actor = HitResult.GetActor();
 	if (Actor)
 	{
@@ -47,15 +58,13 @@ FCommandPointy ASquadPlayerController::CreateCommandPointy(FHitResult HitResult)
 		{
 			CommandPoint.Type = TEXT("Move");
 		}
-		FString CommandPointString = CommandPoint.Location.ToString();
-		FString TypeString = CommandPoint.Type.ToString();
-		UE_LOG(LogTemp, Warning, TEXT("Location: %s ; Type: %s "), *CommandPointString, *TypeString);
-		return FCommandPointy();
+		return CommandPoint;
 	}
 	//If there is no actor hit, return to the player
+	UE_LOG(LogTemp, Warning, TEXT("No actor found. Returning to player."))
 	CommandPoint.Location = this->GetPawn()->GetActorLocation();
 	CommandPoint.Type = TEXT("Move");
-	return FCommandPointy();
+	return CommandPoint;
 }
 
 void ASquadPlayerController::Tick(float DeltatTime)
@@ -80,11 +89,9 @@ void ASquadPlayerController::MoveUpCommand()
 		{
 			//if we get a collision, create a FCommandPointy. 
 			//If the collided actor has a Command Component, get its type and add to the CommandList.
-
 			FCommandPointy CommandPoint = CreateCommandPointy(HitResult);
-			//UE_LOG(LogTemp, Warning, TEXT("Command Point: %s"), CommandPoint.Location.ToString());
 			CommandList.Add(CommandPoint);
-			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, false, 60, 0, 1.f);
+			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, false, 2, 0, 1.f);
 		}
 	}
 }

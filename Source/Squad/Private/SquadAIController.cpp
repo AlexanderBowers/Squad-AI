@@ -27,10 +27,10 @@ void ASquadAIController::Tick(float DeltaTime)
 		if (PlayerController->CommandList.Num() > 0)
 		{
 			FVector &Location = PlayerController->CommandList.Last().Location;
-			MoveToCommand(Location);
+			//UE_LOG(LogTemp, Warning, TEXT("AI sees Location as: %s"), *Location.ToString());
 			if (&Location)
 			{
-				
+				MoveToCommand(Location);
 				//PlayerController->CommandList.RemoveAt(0);
 				
 			}
