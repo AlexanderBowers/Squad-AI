@@ -39,11 +39,7 @@ void ASquadAIController::Tick(float DeltaTime)
 		//If there are any vectors in the command list, go to it and remove it from the list.
 		if (PlayerController->CommandList.Num() > 0)
 		{
-			if (PlayerController->CommandList.Last().Location != LastCommand.Location)
-			{
-				LastCommand = PlayerController->CommandList.Last();
-				MoveToCommand(LastCommand);
-			}
+			MoveToCommand(PlayerController->CommandList.Last());
 		}
 	}
 }
@@ -54,9 +50,10 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint)
 	if (CommandPoint.Location != LastCommand.Location)
 	{
 		MoveToLocation(CommandPoint.Location, 20);
+		LastCommand = PlayerController->CommandList.Last();
 		if (LastCommand.Type == FName("Cover"))
 		{
-			GetCharacter()->Crouch();
+			GetCharacter()->Jump(); //Using Jump just to see if they're doing it before they reach their intended destination. They currently are.
 		}
 	}
 }
