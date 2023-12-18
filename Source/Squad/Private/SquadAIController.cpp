@@ -14,12 +14,20 @@ void ASquadAIController::BeginPlay()
 	Super::BeginPlay();
 	if (GetWorld()->GetFirstPlayerController())
 	{
+
+		//Create their own list of commands. Compare it to the other list on tick.
+		//If the list is different, go to the last element of the array,
 		PlayerController = GetWorld()->GetFirstPlayerController<ASquadPlayerController>();
+
+		FCommandPointy BaseCommand;
+		BaseCommand.Location = PlayerController->GetPawn()->GetActorLocation();
+		BaseCommand.Type = FName("Move");
+		LastCommand = BaseCommand;
 	}
 }
 
 
-void ASquadAIController::Tick(float DeltaTime) 
+void ASquadAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	//ACharacter* Character = this->GetCharacter(); // this is stupid and doesn't want to work.
@@ -31,21 +39,30 @@ void ASquadAIController::Tick(float DeltaTime)
 		//If there are any vectors in the command list, go to it and remove it from the list.
 		if (PlayerController->CommandList.Num() > 0)
 		{
-			FCommandPointy CommandPoint = PlayerController->CommandList.Last();
-
-			MoveToCommand(CommandPoint.Location);
-			UE_LOG(LogTemp, Warning, TEXT("Type: %s"), *CommandPoint.Type.ToString())
-			if (CommandPoint.Type == FName("Cover"))
+			if (PlayerController->CommandList.Last().Location != LastCommand.Location)
 			{
-				GetCharacter()->Crouch();
+				LastCommand = PlayerController->CommandList.Last();
+				MoveToCommand(LastCommand);
 			}
 		}
 	}
 }
 
-void ASquadAIController::MoveToCommand(FVector CommandLocation)
+void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint)
 {
-	MoveToLocation(CommandLocation, 20);
+
+	if (CommandPoint.Location != LastCommand.Location)
+	{
+		MoveToLocation(CommandPoint.Location, 20);
+		if (LastCommand.Type == FName("Cover"))
+		{
+			GetCharacter()->Crouch();
+		}
+	}
+}
+
+void ASquadAIController::HandleCommand(FCommandPointy CommandPoint)
+{
 }
 
 

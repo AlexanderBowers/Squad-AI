@@ -15,16 +15,23 @@ class SQUAD_API ASquadAIController : public AAIController
 {
 	GENERATED_BODY()
 
+public:
+	FCommandPointy LastCommand;
+	TArray<FCommandPointy> LocalCommandList; //In case I need to store multiple commands
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+
 	UFUNCTION()
-	void MoveToCommand(FVector CommandLocation);
+	void MoveToCommand(FCommandPointy CommandPoint);
+	UFUNCTION()
+	void HandleCommand(FCommandPointy CommandPoint); //May need this in the future.
 
 private:
 	UPROPERTY()
-	ASquadPlayerController *PlayerController;
+	ASquadPlayerController* PlayerController;
+
 };
 
 
