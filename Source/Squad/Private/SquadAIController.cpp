@@ -7,6 +7,7 @@
 #include "TimerManager.h"
 #include "CommandPoint.h"
 #include "SquadPlayerController.h"
+#include "Navigation/PathFollowingComponent.h"
 #include "GameFramework/Character.h"
 
 void ASquadAIController::BeginPlay()
@@ -51,6 +52,8 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint)
 	{
 		MoveToLocation(CommandPoint.Location, 20);
 		LastCommand = PlayerController->CommandList.Last();
+
+		if(GetPathFollowingComponent()->HasReached(CommandPoint.Location))
 		if (LastCommand.Type == FName("Cover"))
 		{
 			GetCharacter()->Jump(); //Using Jump just to see if they're doing it before they reach their intended destination. They currently are.
