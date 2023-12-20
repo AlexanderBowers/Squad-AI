@@ -4,7 +4,7 @@
 #include "SquadAIController.h"
 #include "SquadPlayerController.h"
 #include "Engine/EngineTypes.h"
-#include "TimerManager.h"
+
 #include "CommandPoint.h"
 #include "SquadPlayerController.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -48,21 +48,35 @@ void ASquadAIController::Tick(float DeltaTime)
 void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint)
 {
 
-	if (CommandPoint.Location != LastCommand.Location)
-	{
-		MoveToLocation(CommandPoint.Location, 20);
-		LastCommand = PlayerController->CommandList.Last();
+		//const FPathFollowingResult &Result = MoveToLocation(CommandPoint.Location, 20);
+		//GetPathFollowingComponent()->OnPathFinished(Result).HandleCommand(CommandPoint);
+		//ASquadAIController::OnMoveCompleted(RequestID, Result).HandleCommand(CommandPoint);
 
-		if(GetPathFollowingComponent()->HasReached(CommandPoint.Location))
-		if (LastCommand.Type == FName("Cover"))
-		{
-			GetCharacter()->Jump(); //Using Jump just to see if they're doing it before they reach their intended destination. They currently are.
-		}
-	}
+		//GetPathFollowingComponent()->OnRequestFinished.AddLambda([&]() {HandleCommand(CommandPoint); });
+		//TO DO: When MoveToLocation finishes, do HandleCommand
+	MoveToLocation(CommandPoint.Location, 25);
+	HandleCommand(CommandPoint);
+	LastCommand = PlayerController->CommandList.Last();
 }
 
 void ASquadAIController::HandleCommand(FCommandPointy CommandPoint)
 {
+	float DistanceThreshold = 25.0f;
+	float DistanceToCommand = FVector::Distance(GetPawn()->GetActorLocation(), CommandPoint.Location);
+	if (DistanceToCommand <= DistanceThreshold)
+	{
+		if (CommandPoint.Type == FName("Cover"))
+		{
+			GetCharacter()->Jump(); //Using Jump just to see if they're doing it before they reach their intended destination. They currently are.
+		}
+	}
+	else
+	{
+		FTimerDelegate Delegate;
+		Delegate.BindUFunction(this, "HandleCommand", CommandPoint);
+		GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 2.0f, false, 0.0f);
+		
+	}
 }
 
 

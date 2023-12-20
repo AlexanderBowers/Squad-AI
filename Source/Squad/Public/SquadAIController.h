@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "SquadPlayerController.h"
+#include "TimerManager.h"
 #include "SquadAIController.generated.h"
 
 /**
@@ -31,6 +32,8 @@ protected:
 private:
 	UPROPERTY()
 	ASquadPlayerController* PlayerController;
+	UPROPERTY()
+	FTimerHandle TimerHandle;
 
 };
 
