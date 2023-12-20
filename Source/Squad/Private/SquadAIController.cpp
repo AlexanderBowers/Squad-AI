@@ -54,9 +54,14 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint)
 
 		//GetPathFollowingComponent()->OnRequestFinished.AddLambda([&]() {HandleCommand(CommandPoint); });
 		//TO DO: When MoveToLocation finishes, do HandleCommand
-	MoveToLocation(CommandPoint.Location, 25);
-	HandleCommand(CommandPoint);
-	LastCommand = PlayerController->CommandList.Last();
+
+	if (CommandPoint.Location != LastCommand.Location)
+	{
+		MoveToLocation(CommandPoint.Location, 25);
+		HandleCommand(CommandPoint);
+		LastCommand = PlayerController->CommandList.Last();
+	}
+	
 }
 
 void ASquadAIController::HandleCommand(FCommandPointy CommandPoint)
@@ -72,6 +77,7 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint)
 		if (CommandPoint.Type == FName("Cover"))
 		{
 			GetCharacter()->Jump(); //Using Jump just to see if they're doing it before they reach their intended destination. They currently are.
+		
 		}
 		Delegate.Unbind();
 	}
