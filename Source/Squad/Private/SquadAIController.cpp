@@ -61,13 +61,15 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint)
 
 void ASquadAIController::HandleCommand(FCommandPointy CommandPoint)
 {
-	float DistanceThreshold = 25.0f;
+	float DistanceThreshold = 150.0f;
 	float DistanceToCommand = FVector::Distance(GetPawn()->GetActorLocation(), CommandPoint.Location);
+	UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), DistanceToCommand);
 	if (DistanceToCommand <= DistanceThreshold)
 	{
 		if (CommandPoint.Type == FName("Cover"))
 		{
 			GetCharacter()->Jump(); //Using Jump just to see if they're doing it before they reach their intended destination. They currently are.
+			return;
 		}
 	}
 	else
@@ -75,7 +77,6 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint)
 		FTimerDelegate Delegate;
 		Delegate.BindUFunction(this, "HandleCommand", CommandPoint);
 		GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 2.0f, false, 0.0f);
-		
 	}
 }
 
