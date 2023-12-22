@@ -15,11 +15,9 @@ void ASquadAIController::BeginPlay()
 	Super::BeginPlay();
 	if (GetWorld()->GetFirstPlayerController())
 	{
-
-		//Create their own list of commands. Compare it to the other list on tick.
-		//If the list is different, go to the last element of the array,
 		PlayerController = GetWorld()->GetFirstPlayerController<ASquadPlayerController>();
 
+		//Giving them their own fake command to have something to compare to the first command.
 		FCommandPointy BaseCommand;
 		BaseCommand.Location = PlayerController->GetPawn()->GetActorLocation();
 		BaseCommand.Type = FName("Move");
@@ -31,30 +29,17 @@ void ASquadAIController::BeginPlay()
 void ASquadAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//ACharacter* Character = this->GetCharacter(); // this is stupid and doesn't want to work.
-
 	if (PlayerController)
 	{
-		//If the location of the last command is the same as the previous, do nothing.
-		// 
-		//If there are any vectors in the command list, go to it and remove it from the list.
 		if (PlayerController->CommandList.Num() > 0)
 		{
-			MoveToCommand(PlayerController->CommandList.Last());
+			MoveToCommand(PlayerController->CommandList.Last()); //Get the most recent command and prepare to move to it.
 		}
 	}
 }
 
-void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint)
+void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they receive a new command, move to it.
 {
-
-		//const FPathFollowingResult &Result = MoveToLocation(CommandPoint.Location, 20);
-		//GetPathFollowingComponent()->OnPathFinished(Result).HandleCommand(CommandPoint);
-		//ASquadAIController::OnMoveCompleted(RequestID, Result).HandleCommand(CommandPoint);
-
-		//GetPathFollowingComponent()->OnRequestFinished.AddLambda([&]() {HandleCommand(CommandPoint); });
-		//TO DO: When MoveToLocation finishes, do HandleCommand
-
 	if (CommandPoint.Location != LastCommand.Location)
 	{
 		if (GetCharacter()->bIsCrouched)
@@ -65,10 +50,9 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint)
 		HandleCommand(CommandPoint);
 		LastCommand = PlayerController->CommandList.Last();
 	}
-	
 }
 
-void ASquadAIController::HandleCommand(FCommandPointy CommandPoint)
+void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if they need to crouch, suppress, etc.
 {
 	FTimerDelegate Delegate;
 	Delegate.BindUFunction(this, "HandleCommand", CommandPoint);
@@ -94,23 +78,3 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint)
 
 	//TODO: Allow multiple Squad AI to respond to command. DONE!
 	//Allow multiple types of commands to be implemented (cover, move, suppress)
-	//Assign points in environment for cover and suppress; otherwise move.
-
-
-
-
-//Perhaps multiple AI can't respond to the command because it's getting removed too quickly? Should I use a timer?
-// 
-	////Timers need a handle, delegate, and float. Delegate is the function and in this case is a lambda function.
-	//FTimerHandle DelayTimerHandle;
-	//float DelayInSeconds = 5.0f;
-	//// Define the function to be executed after the delay
-	//FTimerDelegate DelayDelegate;
-	//DelayDelegate.BindLambda([]() {
-
-	//	UE_LOG(LogTemp, Warning, TEXT("Delayed action executed after 5 seconds"));
-
-	//	});
-
-	//// Start the timer
-	//GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, DelayDelegate, DelayInSeconds, false);
