@@ -47,6 +47,9 @@ public:
 
 	UFUNCTION()
 	void MoveUpCommand();
+	UFUNCTION()
+	void FormUpCommand();
+
 
 	virtual void SetupInputComponent() override;
 

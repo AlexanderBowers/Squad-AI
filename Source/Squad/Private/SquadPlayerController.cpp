@@ -47,23 +47,25 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 			if (TagType.Len() > 0)
 			{
 				CommandPoint.Type = FName(TagType);
+				DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Green, false, 2, 0, 1.f);
 			}
 			else
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Found Component but not tag!"))
-				CommandPoint.Type = TEXT("Move");
+				CommandPoint.Type = FName("Move");
 			}
 		}
 		else //If there is no component, default the type to move.
 		{
-			CommandPoint.Type = TEXT("Move");
+			CommandPoint.Type = FName("Move");
+			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, false, 2, 0, 1.f);
 		}
 		return CommandPoint;
 	}
 	//If there is no actor hit, return to the player
 	UE_LOG(LogTemp, Warning, TEXT("No actor found. Returning to player."))
 	CommandPoint.Location = this->GetPawn()->GetActorLocation();
-	CommandPoint.Type = TEXT("Move");
+	CommandPoint.Type = FName("Move");
 	return CommandPoint;
 }
 
@@ -76,7 +78,8 @@ void ASquadPlayerController::MoveUpCommand()
 {
 	//Line trace to a location. On collision, create a FCommandPointy then add it to the list.
 
-	if (ControlledPawn) {
+	if (ControlledPawn)
+	{
 		GetPlayerViewPoint(CameraLocation, CameraRotation);
 		FVector End = CameraLocation + CameraRotation.Vector() * MaxRange;
 
@@ -91,8 +94,22 @@ void ASquadPlayerController::MoveUpCommand()
 			//If the collided actor has a Command Component, get its type and add to the CommandList.
 			FCommandPointy CommandPoint = CreateCommandPointy(HitResult);
 			CommandList.Add(CommandPoint);
-			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, false, 2, 0, 1.f);
+
+			
+			
 		}
+	}
+}
+
+void ASquadPlayerController::FormUpCommand()
+{
+	if (ControlledPawn)
+	{
+		FCommandPointy CommandPoint;
+		CommandPoint.Location = ControlledPawn->GetActorLocation();
+		CommandPoint.Type = FName("Move");
+		CommandList.Add(CommandPoint);
+		DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), 20, 20, FColor::Purple, false, 2, 0, 1.f);
 	}
 }
 
@@ -101,5 +118,6 @@ void ASquadPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	InputComponent->BindAction("MoveUpCommand", IE_Pressed, this, &ASquadPlayerController::MoveUpCommand);
+	InputComponent->BindAction("FormUpCommand", IE_Pressed, this, &ASquadPlayerController::FormUpCommand);
 
 }
