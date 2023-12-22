@@ -57,6 +57,10 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint)
 
 	if (CommandPoint.Location != LastCommand.Location)
 	{
+		if (GetCharacter()->bIsCrouched)
+		{
+			GetCharacter()->UnCrouch();
+		}
 		MoveToLocation(CommandPoint.Location, 25);
 		HandleCommand(CommandPoint);
 		LastCommand = PlayerController->CommandList.Last();
@@ -70,13 +74,12 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint)
 	Delegate.BindUFunction(this, "HandleCommand", CommandPoint);
 	float DistanceThreshold = 150.0f;
 	float DistanceToCommand = FVector::Distance(GetPawn()->GetActorLocation(), CommandPoint.Location);
-	UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), DistanceToCommand);
 	if (DistanceToCommand <= DistanceThreshold)
 	{
 		StopMovement();
 		if (CommandPoint.Type == FName("Cover"))
 		{
-			GetCharacter()->Jump(); //Using Jump just to see if they're doing it before they reach their intended destination. They currently are.
+			GetCharacter()->Crouch();
 		
 		}
 		Delegate.Unbind();
