@@ -19,6 +19,10 @@ class SQUAD_API ASquadAIController : public AAIController
 public:
 	FCommandPointy LastCommand;
 	TArray<FCommandPointy> LocalCommandList; //In case I need to store multiple commands
+
+	UPROPERTY(EditAnywhere)
+	bool bShouldFollow = true;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -27,13 +31,17 @@ protected:
 	UFUNCTION()
 	void MoveToCommand(FCommandPointy CommandPoint);
 	UFUNCTION()
-	void HandleCommand(FCommandPointy CommandPoint); //May need this in the future.
+	void HandleCommand(FCommandPointy CommandPoint);
+	UFUNCTION()
+	void FollowPlayer();
+
 
 private:
 	UPROPERTY()
 	ASquadPlayerController* PlayerController;
 	UPROPERTY()
 	FTimerHandle TimerHandle;
+	
 
 };
 

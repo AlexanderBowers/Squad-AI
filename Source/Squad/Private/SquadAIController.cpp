@@ -31,12 +31,17 @@ void ASquadAIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (PlayerController)
 	{
+		if (bShouldFollow)
+		{
+			FollowPlayer();
+		}
 		if (PlayerController->CommandList.Num() > 0)
 		{
 			MoveToCommand(PlayerController->CommandList.Last()); //Get the most recent command and prepare to move to it.
 			if (FVector::Distance(GetCharacter()->GetActorLocation(), PlayerController->GetPawn()->GetActorLocation()) >= 2000.0f)
 			{
-				MoveToLocation(PlayerController->GetPawn()->GetActorLocation());
+				bShouldFollow = true;
+				FollowPlayer();
 			}
 		}
 		
@@ -47,6 +52,7 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they re
 {
 	if (CommandPoint.Location != LastCommand.Location)
 	{
+		bShouldFollow = false;
 		if (GetCharacter()->bIsCrouched)
 		{
 			GetCharacter()->UnCrouch();
@@ -81,6 +87,16 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if t
 	}
 }
 
+void ASquadAIController::FollowPlayer()
+{
+	FTimerDelegate Delegate;
+	Delegate.BindUFunction(this, "FollowPlayer");
+	MoveToLocation(PlayerController->GetPawn()->GetActorLocation());
+	GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 0.5f, bShouldFollow, 0.0f);
+}
+
 
 	//TODO: Allow multiple Squad AI to respond to command. DONE!
 	//Allow multiple types of commands to be implemented (cover, move, suppress)
+//NEXT STEPS:
+//Get Following player working. Use a boolean to determine whether the AI should stick to the player
