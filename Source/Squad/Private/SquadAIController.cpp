@@ -89,6 +89,10 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if t
 
 void ASquadAIController::FollowPlayer()
 {
+	if (GetCharacter()->bIsCrouched)
+	{
+		GetCharacter()->UnCrouch();
+	}
 	FTimerDelegate Delegate;
 	Delegate.BindUFunction(this, "FollowPlayer");
 	MoveToLocation(PlayerController->GetPawn()->GetActorLocation());
