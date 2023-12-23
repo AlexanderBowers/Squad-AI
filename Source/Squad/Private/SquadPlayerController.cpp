@@ -7,7 +7,7 @@
 #include "Components/InputComponent.h"
 #include "Engine/Engine.h"
 #include "CommandComponent.h"
-//#include "CommandPoint.h"
+#include "SquadAIController.h"
 
 void ASquadPlayerController::BeginPlay()
 {
@@ -107,7 +107,7 @@ void ASquadPlayerController::FormUpCommand()
 	{
 		FCommandPointy CommandPoint;
 		CommandPoint.Location = ControlledPawn->GetActorLocation();
-		CommandPoint.Type = FName("Move");
+		CommandPoint.Type = FName("Return");
 		CommandList.Add(CommandPoint);
 		DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), 20, 20, FColor::Purple, false, 2, 0, 1.f);
 	}

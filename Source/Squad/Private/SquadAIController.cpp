@@ -22,6 +22,7 @@ void ASquadAIController::BeginPlay()
 		BaseCommand.Location = PlayerController->GetPawn()->GetActorLocation();
 		BaseCommand.Type = FName("Move");
 		LastCommand = BaseCommand;
+
 	}
 }
 
@@ -34,6 +35,7 @@ void ASquadAIController::Tick(float DeltaTime)
 		if (bShouldFollow)
 		{
 			FollowPlayer();
+
 		}
 		if (PlayerController->CommandList.Num() > 0)
 		{
@@ -42,6 +44,7 @@ void ASquadAIController::Tick(float DeltaTime)
 			{
 				bShouldFollow = true;
 				FollowPlayer();
+
 			}
 		}
 		
@@ -56,16 +59,19 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they re
 		if (GetCharacter()->bIsCrouched)
 		{
 			GetCharacter()->UnCrouch();
+
 		}
 
 		MoveToLocation(CommandPoint.Location, 25);
 		HandleCommand(CommandPoint);
 		LastCommand = PlayerController->CommandList.Last();
+
 	}
 }
 
 void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if they need to crouch, suppress, etc.
 {
+	//Called when AIController reached their destination
 	FTimerDelegate Delegate;
 	Delegate.BindUFunction(this, "HandleCommand", CommandPoint);
 	float DistanceThreshold = 150.0f;
@@ -73,17 +79,21 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if t
 	if (DistanceToCommand <= DistanceThreshold)
 	{
 		StopMovement();
-		if (CommandPoint.Type == FName("Cover"))
-		{
+		if (CommandPoint.Type == FName("Cover")) // trying to convert this to switch statement
+		{ 
 			GetCharacter()->Crouch();
 		
+		}
+		if (CommandPoint.Type ==  FName("Return"))
+		{
+			bShouldFollow = true;
 		}
 		Delegate.Unbind();
 	}
 	else
 	{
-		
 		GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 2.0f, false, 0.0f);
+
 	}
 }
 
@@ -92,11 +102,13 @@ void ASquadAIController::FollowPlayer()
 	if (GetCharacter()->bIsCrouched)
 	{
 		GetCharacter()->UnCrouch();
+
 	}
 	FTimerDelegate Delegate;
 	Delegate.BindUFunction(this, "FollowPlayer");
-	MoveToLocation(PlayerController->GetPawn()->GetActorLocation());
+	MoveToLocation(PlayerController->GetPawn()->GetActorLocation(), 200);
 	GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 0.5f, bShouldFollow, 0.0f);
+
 }
 
 
