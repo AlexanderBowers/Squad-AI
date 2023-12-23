@@ -55,7 +55,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TArray<FCommandPointy> CommandList;
-
+	UPROPERTY(VisibleAnywhere)
+	TArray<AActor*> SquadMembers;
 	
 
 private:

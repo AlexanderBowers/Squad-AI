@@ -8,13 +8,17 @@
 #include "Engine/Engine.h"
 #include "CommandComponent.h"
 #include "SquadAIController.h"
+#include <Kismet/GameplayStatics.h>
 
 void ASquadPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	if (ASquadPlayerController::GetPawn()) {
+	if (ASquadPlayerController::GetPawn())
+	{
 		ControlledPawn = GetPawn();
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASquadAIController::StaticClass(), SquadMembers); // Get all Squad Member controllers.
 	}
+
 }
 
 
