@@ -22,6 +22,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	bool bShouldFollow = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
+	bool bIsIndoors = false;
 
 protected:
 	virtual void BeginPlay() override;

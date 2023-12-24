@@ -62,6 +62,10 @@ void ASquadAIController::Tick(float DeltaTime)
 		}
 		
 	}
+	if (bIsIndoors)
+	{
+		GetCharacter()->Jump();
+	}
 }
 
 void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they receive a new command, move to it.
