@@ -42,7 +42,7 @@ public:
 	FCommandPointy AssignLocation(FCommandPointy CommandPoint, FHitResult HitResult);
 	UFUNCTION()
 	FCommandPointy AssignType(FCommandPointy CommandPoint, FHitResult HitResult);
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	TArray<AActor*> GetRooms(AActor* Building);
 	
 	virtual void Tick(float DeltatTime) override;
