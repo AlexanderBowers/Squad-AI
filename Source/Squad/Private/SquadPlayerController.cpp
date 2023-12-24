@@ -73,6 +73,21 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 	return CommandPoint;
 }
 
+TArray<AActor*> ASquadPlayerController::GetRooms(AActor* Building)
+{
+	RoomsInBuilding;  //Get all components that match BP_Room in BP_Building
+									  //After, Assign a room to each squad member inside of AssignRoom
+									  // 
+									  //BP_Room needs a boolean of IsCleared 
+									  //if AIController overlaps it, set to true.
+									  // Inside AssignRoom, If a room isn't cleared, and there's no assigned AI, assign to the first squad member that doesn't have a room assigned
+									  //If there are leftover rooms, set a timer to rerun AssignRoom
+		
+
+
+	return RoomsInBuilding;
+}
+
 void ASquadPlayerController::Tick(float DeltatTime)
 {
 

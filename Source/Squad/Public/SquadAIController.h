@@ -24,6 +24,10 @@ public:
 	bool bShouldFollow = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
 	bool bIsIndoors = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
+	AActor* Building;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
+	AActor* Room;
 
 protected:
 	virtual void BeginPlay() override;

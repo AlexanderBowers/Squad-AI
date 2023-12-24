@@ -42,6 +42,8 @@ public:
 	FCommandPointy AssignLocation(FCommandPointy CommandPoint, FHitResult HitResult);
 	UFUNCTION()
 	FCommandPointy AssignType(FCommandPointy CommandPoint, FHitResult HitResult);
+	UFUNCTION()
+	TArray<AActor*> GetRooms(AActor* Building);
 	
 	virtual void Tick(float DeltatTime) override;
 
@@ -57,6 +59,7 @@ public:
 	TArray<FCommandPointy> CommandList;
 	UPROPERTY(VisibleAnywhere)
 	TArray<AActor*> SquadMembers;
+	TArray<AActor*> RoomsInBuilding;
 	
 
 private:

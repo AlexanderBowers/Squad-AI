@@ -64,7 +64,7 @@ void ASquadAIController::Tick(float DeltaTime)
 	}
 	if (bIsIndoors)
 	{
-		GetCharacter()->Jump();
+		
 	}
 }
 
