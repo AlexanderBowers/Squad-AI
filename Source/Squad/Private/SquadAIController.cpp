@@ -45,11 +45,22 @@ void ASquadAIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (PlayerController)
 	{
+		if (bIsIndoors)
+		{
+			if (Room != nullptr)
+			{
+				bShouldFollow = false;
+				MoveToLocation(Room->GetActorLocation());
+
+			}
+		
+		}
 		if (bShouldFollow)
 		{
 			FollowPlayer();
 
 		}
+		
 		if (PlayerController->CommandList.Num() > 0)
 		{
 			MoveToCommand(PlayerController->CommandList.Last()); //Get the most recent command and prepare to move to it.
@@ -60,10 +71,6 @@ void ASquadAIController::Tick(float DeltaTime)
 
 			}
 		}
-		
-	}
-	if (bIsIndoors)
-	{
 		
 	}
 }
@@ -125,7 +132,7 @@ void ASquadAIController::FollowPlayer()
 	Delegate.BindUFunction(this, "FollowPlayer");
 	MoveToLocation(PlayerController->GetPawn()->GetActorLocation(), 200);
 	GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 0.5f, bShouldFollow, 0.0f);
-
+	Delegate.Unbind();
 }
 
 
