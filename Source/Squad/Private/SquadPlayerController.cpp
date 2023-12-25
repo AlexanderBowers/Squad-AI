@@ -9,6 +9,8 @@
 #include "CommandComponent.h"
 #include "SquadAIController.h"
 #include <Kismet/GameplayStatics.h>
+#include "UObject/Class.h"
+#include "GameFramework/Character.h"
 
 void ASquadPlayerController::BeginPlay()
 {
@@ -81,72 +83,11 @@ TArray<AActor *> ASquadPlayerController::GetRooms(AActor* Building)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Check 1"));
 		UChildActorComponent* BPRoom = Cast<UChildActorComponent>(Room);
-
-		// Get a reference to the actor's class
 		UClass* ActorClass = Room->GetClass();
-
-		// Iterate through the properties of the actor's class
-		for (TFieldIterator<UProperty> PropertyIt(ActorClass); PropertyIt; ++PropertyIt)
-		{
-			// Get the property
-			UProperty* Property = *PropertyIt;
-
-			// Get the name and value of the property
-			FString PropertyName = Property->GetName();
-			void* PropertyValue = Property->ContainerPtrToValuePtr<void>(Room);
-			if (PropertyName == TEXT("bIsCleared"))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Holy shit!"));
-			}
-			if (PropertyName == TEXT("AssignedSquadMember"))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Holy dsfdsfdsfhjkdsfhdskfkhjds"));
-			}
-
-			// Now you can use PropertyName and PropertyValue as needed
-			// For example, you can print the name and value of each property
-			if (PropertyValue)
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("Property: %s, Value: %s"), *PropertyName, *FString::Printf(TEXT("%p"), PropertyValue));
-			}
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		if (BPRoom)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Check 2!!!"));
-			TSubclassOf<AActor> TheRoom = BPRoom->GetChildActorClass();
-			if (TheRoom)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("the room: %s"), *TheRoom->GetName());
-			}
-
-		}
-		
+		CheckRoomValues(ActorClass, Room);
 	}
 	
-	
-	
-	
-	
-	
-	//Get all components that match BP_Room in BP_Building
+									//Get all components that match BP_Room in BP_Building
 									  //After, Assign a room to each squad member inside of AssignRoom
 									  // 
 									  //BP_Room needs a boolean of IsCleared 
@@ -156,6 +97,50 @@ TArray<AActor *> ASquadPlayerController::GetRooms(AActor* Building)
 	
 
 	return RoomsInBuilding;
+}
+
+void ASquadPlayerController::CheckRoomValues(UClass* ActorClass, AActor* Room)
+{
+	FProperty* IsCleared = ActorClass->FindPropertyByName(TEXT("bIsCleared"));
+	if (IsCleared) // Checking to see if there is a property by name of bIsCleared
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Check 2"));
+		bool* ClearedValue = IsCleared->ContainerPtrToValuePtr<bool>(Room);
+
+		if (!*ClearedValue) //Check to see if the value of bIsCleared is false.
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Check 3"));
+			FProperty* AssignedSquadMember = ActorClass->FindPropertyByName(TEXT("AssignedSquadMember"));
+			if (AssignedSquadMember) //Check to see if there is a property by the name of AssignedSquadMember
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Check 4"));
+				ASquadAIController* AssignedValue = AssignedSquadMember->ContainerPtrToValuePtr<ASquadAIController>(Room);
+				if (AssignedValue) //Check to see if AssignedSquadMember's value is a pointer of type ASquadAIController
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Check 5"));
+					if (AssignedValue->GetCharacter() == nullptr) //Check to see if the value of SquadMember's GetCharacter is a nullptr
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Check 6"));
+						for (AActor* Member : SquadMembers)
+						{
+							ASquadAIController* Commando = Cast<ASquadAIController>(Member);
+							if (Commando) //Check to see if the squad member is valid
+							{	
+								UE_LOG(LogTemp, Warning, TEXT("Check7")); 
+								if (Commando->Room == nullptr) //Check to see if the squad member has an assigned room alread
+								{
+									Commando->Room = Room;
+									AssignedValue = Commando;
+									UE_LOG(LogTemp, Warning, TEXT("Assigning Worked!!!"));
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void ASquadPlayerController::Tick(float DeltatTime)

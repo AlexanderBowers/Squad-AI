@@ -44,6 +44,9 @@ public:
 	FCommandPointy AssignType(FCommandPointy CommandPoint, FHitResult HitResult);
 	UFUNCTION(BlueprintCallable)
 	TArray<AActor*> GetRooms(AActor* Building);
+	UFUNCTION()
+	void CheckRoomValues(UClass* ActorClass, AActor* Room);
+
 	
 	virtual void Tick(float DeltatTime) override;
 
