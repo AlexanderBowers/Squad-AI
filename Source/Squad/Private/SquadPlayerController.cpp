@@ -4,7 +4,7 @@
 #include "SquadPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
-#include "Components/InputComponent.h"
+#include "Components.h"
 #include "Engine/Engine.h"
 #include "CommandComponent.h"
 #include "SquadAIController.h"
@@ -73,17 +73,87 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 	return CommandPoint;
 }
 
-TArray<AActor*> ASquadPlayerController::GetRooms(AActor* Building)
+TArray<AActor *> ASquadPlayerController::GetRooms(AActor* Building)
 {
-	RoomsInBuilding;  //Get all components that match BP_Room in BP_Building
+	UE_LOG(LogTemp, Warning, TEXT("Check 0"));
+	Building->GetAllChildActors(RoomsInBuilding);
+	for (AActor* Room : RoomsInBuilding)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Check 1"));
+		UChildActorComponent* BPRoom = Cast<UChildActorComponent>(Room);
+
+		// Get a reference to the actor's class
+		UClass* ActorClass = Room->GetClass();
+
+		// Iterate through the properties of the actor's class
+		for (TFieldIterator<UProperty> PropertyIt(ActorClass); PropertyIt; ++PropertyIt)
+		{
+			// Get the property
+			UProperty* Property = *PropertyIt;
+
+			// Get the name and value of the property
+			FString PropertyName = Property->GetName();
+			void* PropertyValue = Property->ContainerPtrToValuePtr<void>(Room);
+			if (PropertyName == TEXT("bIsCleared"))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Holy shit!"));
+			}
+			if (PropertyName == TEXT("AssignedSquadMember"))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Holy dsfdsfdsfhjkdsfhdskfkhjds"));
+			}
+
+			// Now you can use PropertyName and PropertyValue as needed
+			// For example, you can print the name and value of each property
+			if (PropertyValue)
+			{
+				//UE_LOG(LogTemp, Warning, TEXT("Property: %s, Value: %s"), *PropertyName, *FString::Printf(TEXT("%p"), PropertyValue));
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		if (BPRoom)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Check 2!!!"));
+			TSubclassOf<AActor> TheRoom = BPRoom->GetChildActorClass();
+			if (TheRoom)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("the room: %s"), *TheRoom->GetName());
+			}
+
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	//Get all components that match BP_Room in BP_Building
 									  //After, Assign a room to each squad member inside of AssignRoom
 									  // 
 									  //BP_Room needs a boolean of IsCleared 
 									  //if AIController overlaps it, set to true.
 									  // Inside AssignRoom, If a room isn't cleared, and there's no assigned AI, assign to the first squad member that doesn't have a room assigned
 									  //If there are leftover rooms, set a timer to rerun AssignRoom
-		
-
+	
 
 	return RoomsInBuilding;
 }
