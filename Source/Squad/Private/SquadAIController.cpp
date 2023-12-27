@@ -115,11 +115,27 @@ void ASquadAIController::ClearRoom()
 {
 	if (Room != nullptr)
 	{
+		bShouldFollow = false;
 		FCommandPointy RoomPoint;
 		FVector Test = Room->GetActorLocation();
 		RoomPoint.Location = Room->GetActorLocation();
 		RoomPoint.Type = FName("Cover");
+		FTimerDelegate Delegate;
+		Delegate.BindUFunction(this, "ClearRoom");
 		MoveToCommand(RoomPoint);
+		float DistanceThreshold = 150.0f;
+		float DistanceToCommand = FVector::Distance(GetPawn()->GetActorLocation(), RoomPoint.Location);
+		if (DistanceToCommand <= DistanceThreshold)
+		{
+			bShouldFollow = true;
+			Delegate.Unbind();
+
+		}
+		else
+		{
+			GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 5.0f, false, 5.0f);
+
+		}
 	}
 
 }
@@ -128,4 +144,4 @@ void ASquadAIController::ClearRoom()
 	//TODO: Allow multiple Squad AI to respond to command. DONE!
 	//Allow multiple types of commands to be implemented (cover, move, suppress)
 //NEXT STEPS:
-//Get Following player working. Use a boolean to determine whether the AI should stick to the player
+//Get Following player working. Use a boolean to determine whether the AI should stick to the player. DONE!
