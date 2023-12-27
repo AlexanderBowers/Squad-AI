@@ -29,6 +29,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
 	AActor* Room;
 
+	UFUNCTION()
+	void ClearRoom();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

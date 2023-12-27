@@ -45,16 +45,6 @@ void ASquadAIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (PlayerController)
 	{
-		if (bIsIndoors)
-		{
-			if (Room != nullptr)
-			{
-				bShouldFollow = false;
-				MoveToLocation(Room->GetActorLocation());
-
-			}
-		
-		}
 		if (bShouldFollow)
 		{
 			FollowPlayer();
@@ -88,7 +78,7 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they re
 
 		MoveToLocation(CommandPoint.Location, 25);
 		HandleCommand(CommandPoint);
-		LastCommand = PlayerController->CommandList.Last();
+		LastCommand = CommandPoint;
 
 	}
 }
@@ -133,6 +123,20 @@ void ASquadAIController::FollowPlayer()
 	MoveToLocation(PlayerController->GetPawn()->GetActorLocation(), 200);
 	GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 0.5f, bShouldFollow, 0.0f);
 	Delegate.Unbind();
+}
+
+void ASquadAIController::ClearRoom()
+{
+	if (Room != nullptr)
+	{
+		FCommandPointy RoomPoint;
+		FVector Test = Room->GetActorLocation();
+		UE_LOG(LogTemp, Warning, TEXT("MyVector: X: %f, Y: %f, Z: %f"), Test.X, Test.Y, Test.Z);
+		RoomPoint.Location = Room->GetActorLocation();
+		RoomPoint.Type = FName("Cover");
+		MoveToCommand(RoomPoint);
+	}
+
 }
 
 

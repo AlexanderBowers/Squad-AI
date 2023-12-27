@@ -115,9 +115,10 @@ void ASquadPlayerController::CheckRoomValues(UClass* ActorClass, AActor* Room)
 							{	
 								if (Commando->Room == nullptr) //Check to see if the squad member has an assigned room alread
 								{
-									Commando->Room = Room;
 									AssignedValue = Commando;
-									break;
+									Commando->Room = Room;
+									Commando->ClearRoom();
+									return;
 								}
 							}
 						}
