@@ -46,6 +46,8 @@ public:
 	TArray<AActor*> GetRooms(AActor* Building);
 	UFUNCTION()
 	void CheckRoomValues(UClass* ActorClass, AActor* Room);
+	UFUNCTION()
+	void AssignRoom(AActor* Room, ASquadAIController* AssignedValue);
 
 	
 	virtual void Tick(float DeltatTime) override;

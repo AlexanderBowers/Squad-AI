@@ -19,6 +19,7 @@ void ASquadPlayerController::BeginPlay()
 	{
 		ControlledPawn = GetPawn();
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASquadAIController::StaticClass(), SquadMembers); // Get all Squad Member controllers.
+
 	}
 
 }
@@ -33,12 +34,14 @@ FCommandPointy ASquadPlayerController::CreateCommandPointy(FHitResult HitResult)
 	CommandPoint = AssignLocation(CommandPoint, HitResult);
 	CommandPoint = AssignType(CommandPoint, HitResult);
 	return CommandPoint;
+
 }
 
 FCommandPointy ASquadPlayerController::AssignLocation(FCommandPointy CommandPoint, FHitResult HitResult)
 {
 	CommandPoint.Location = HitResult.Location;
 	return CommandPoint;
+
 }
 
 FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, FHitResult HitResult)
@@ -54,25 +57,30 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 			{
 				CommandPoint.Type = FName(TagType);
 				DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Green, false, 2, 0, 1.f);
+
 			}
 			else
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Found Component but not tag!"))
 				CommandPoint.Type = FName("Move");
+
 			}
 		}
 		else //If there is no component, default the type to move.
 		{
 			CommandPoint.Type = FName("Move");
 			DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Red, false, 2, 0, 1.f);
+
 		}
 		return CommandPoint;
+
 	}
 	//If there is no actor hit, return to the player
 	UE_LOG(LogTemp, Warning, TEXT("No actor found. Returning to player."))
 	CommandPoint.Location = this->GetPawn()->GetActorLocation();
 	CommandPoint.Type = FName("Move");
 	return CommandPoint;
+
 }
 
 TArray<AActor *> ASquadPlayerController::GetRooms(AActor* Building)
@@ -85,10 +93,10 @@ TArray<AActor *> ASquadPlayerController::GetRooms(AActor* Building)
 	for (AActor* Room : RoomsInBuilding)
 	{
 		FVector RoomLocation = Room->GetActorLocation();
-		UE_LOG(LogTemp, Warning, TEXT("Check 0; Room Location: %f, %f, %f"), RoomLocation.X, RoomLocation.Y, RoomLocation.Z );
 		UChildActorComponent* BPRoom = Cast<UChildActorComponent>(Room);
 		UClass* ActorClass = Room->GetClass();
 		CheckRoomValues(ActorClass, Room);
+
 	}
 	return RoomsInBuilding;
 }
@@ -98,74 +106,50 @@ void ASquadPlayerController::CheckRoomValues(UClass* ActorClass, AActor* Room)
 	FProperty* IsCleared = ActorClass->FindPropertyByName(TEXT("bIsCleared"));
 	if (IsCleared) // Checking to see if there is a property by name of bIsCleared
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Check 1"));
 		bool* ClearedValue = IsCleared->ContainerPtrToValuePtr<bool>(Room);
 
 		if (!*ClearedValue) //Check to see if the value of bIsCleared is false.
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Check 2"));
 			FProperty* AssignedSquadMember = ActorClass->FindPropertyByName(TEXT("AssignedSquadMember"));
 			if (AssignedSquadMember) //Check to see if there is a property by the name of AssignedSquadMember
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Check 3"));
 				ASquadAIController* AssignedValue = AssignedSquadMember->ContainerPtrToValuePtr<ASquadAIController>(Room);
 				if (AssignedValue) //Check to see if AssignedSquadMember's value is a pointer of type ASquadAIController
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Check 4; AssignedSquadMember property exists"));
 					if (AssignedValue->GetCharacter() == nullptr) //Check to see if the value of SquadMember's GetCharacter is a nullptr
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Check 5; AssignedSquadMember->GetCharacter() is nullptr"));
-						for (AActor* Member : SquadMembers)
-						{
-							ASquadAIController* Commando = Cast<ASquadAIController>(Member);
-							if (Commando) //Check to see if the squad member is valid
-							{	
-								UE_LOG(LogTemp, Warning, TEXT("Check 6; individual Commandos."));
-								if (Commando->Room == nullptr) //Check to see if the squad member has an assigned room alread
-								{
-									UE_LOG(LogTemp, Warning, TEXT("Check 7; Commando->Room is nullptr"));
-									AssignedValue = Commando;
-									Commando->Room = Room;
-									Commando->ClearRoom();
-									return;
-								}
-							}
-						}
+						AssignRoom(Room, AssignedValue);
+						
 					}
 					else
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Check 5b; AssignedSquadMember->GetCharacter() NOT nullptr."));
-						ACharacter* UnknownCharacter = AssignedValue->GetCharacter();
-						if (UnknownCharacter)
-						{
-							AssignedValue = nullptr;
-							//CheckRoomValues(ActorClass, Room);
-							for (AActor* Member : SquadMembers)
-							{
-								ASquadAIController* Commando = Cast<ASquadAIController>(Member);
-								if (Commando) //Check to see if the squad member is valid
-								{
-									UE_LOG(LogTemp, Warning, TEXT("Check 6; individual Commandos."));
-									if (Commando->Room == nullptr) //Check to see if the squad member has an assigned room alread
-									{
-										UE_LOG(LogTemp, Warning, TEXT("Check 7; Commando->Room is nullptr"));
-										AssignedValue = Commando;
-										Commando->Room = Room;
-										Commando->ClearRoom();
-										return;
-									}
-								}
+						AssignedValue = nullptr;
+						AssignRoom(Room, AssignedValue);
 
-							}
-						}
-
-
-						return;
-						//UE_LOG(LogTemp, Warning, TEXT("Check 5b; AssignedSquadMember->GetCharacter() NOT nullptr. Character: %s"), *AssignedValue->GetCharacter()->GetName());
 					}
 				}
 			}
 		}
+	}
+}
+
+void ASquadPlayerController::AssignRoom(AActor* Room, ASquadAIController* AssignedValue)
+{
+	for (AActor* Member : SquadMembers)
+	{
+		ASquadAIController* Commando = Cast<ASquadAIController>(Member);
+		if (Commando) //Check to see if the squad member is valid
+		{
+			if (Commando->Room == nullptr) //Check to see if the squad member has an assigned room alread
+			{
+				AssignedValue = Commando;
+				Commando->Room = Room;
+				Commando->ClearRoom();
+				return;
+
+			}
+		}
+
 	}
 }
 
@@ -194,8 +178,6 @@ void ASquadPlayerController::MoveUpCommand()
 			//If the collided actor has a Command Component, get its type and add to the CommandList.
 			FCommandPointy CommandPoint = CreateCommandPointy(HitResult);
 			CommandList.Add(CommandPoint);
-
-			
 			
 		}
 	}
@@ -210,6 +192,7 @@ void ASquadPlayerController::FormUpCommand()
 		CommandPoint.Type = FName("Return");
 		CommandList.Add(CommandPoint);
 		DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), 20, 20, FColor::Purple, false, 2, 0, 1.f);
+
 	}
 }
 

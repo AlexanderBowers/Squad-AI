@@ -25,21 +25,7 @@ void ASquadAIController::BeginPlay()
 
 	}
 }
-
-//NEXT: Force AI to jump when they enter a building!
-//This will require:
-//	What is a building?
-//		How will AI know they are in a building? Overlap on Trigger Volume!
-//			
-//
-//		BONUS: Assign Rooms to Squad members! -Assign when Player overlaps building!
-//			How will AI know they are in a room ? -Room IDs & Overlap!
-//				Start with 3 rooms for 3 squad members
-//					Each should go into their own designated room
-//						Leave Hallway alone for now
-				
-			
-			
+							
 void ASquadAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -131,7 +117,6 @@ void ASquadAIController::ClearRoom()
 	{
 		FCommandPointy RoomPoint;
 		FVector Test = Room->GetActorLocation();
-		UE_LOG(LogTemp, Warning, TEXT("Check 8: Success. X: %f, Y: %f, Z: %f"), Test.X, Test.Y, Test.Z);
 		RoomPoint.Location = Room->GetActorLocation();
 		RoomPoint.Type = FName("Cover");
 		MoveToCommand(RoomPoint);
