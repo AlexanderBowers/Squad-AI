@@ -54,7 +54,7 @@ public:
 
 	UFUNCTION()
 	void MoveUpCommand();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void FormUpCommand();
 
 
