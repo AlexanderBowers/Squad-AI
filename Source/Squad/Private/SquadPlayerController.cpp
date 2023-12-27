@@ -84,6 +84,8 @@ TArray<AActor *> ASquadPlayerController::GetRooms(AActor* Building)
 	Building->GetAllChildActors(RoomsInBuilding);
 	for (AActor* Room : RoomsInBuilding)
 	{
+		FVector RoomLocation = Room->GetActorLocation();
+		UE_LOG(LogTemp, Warning, TEXT("Check 0; Room Location: %f, %f, %f"), RoomLocation.X, RoomLocation.Y, RoomLocation.Z );
 		UChildActorComponent* BPRoom = Cast<UChildActorComponent>(Room);
 		UClass* ActorClass = Room->GetClass();
 		CheckRoomValues(ActorClass, Room);
@@ -96,25 +98,32 @@ void ASquadPlayerController::CheckRoomValues(UClass* ActorClass, AActor* Room)
 	FProperty* IsCleared = ActorClass->FindPropertyByName(TEXT("bIsCleared"));
 	if (IsCleared) // Checking to see if there is a property by name of bIsCleared
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Check 1"));
 		bool* ClearedValue = IsCleared->ContainerPtrToValuePtr<bool>(Room);
 
 		if (!*ClearedValue) //Check to see if the value of bIsCleared is false.
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Check 2"));
 			FProperty* AssignedSquadMember = ActorClass->FindPropertyByName(TEXT("AssignedSquadMember"));
 			if (AssignedSquadMember) //Check to see if there is a property by the name of AssignedSquadMember
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Check 3"));
 				ASquadAIController* AssignedValue = AssignedSquadMember->ContainerPtrToValuePtr<ASquadAIController>(Room);
 				if (AssignedValue) //Check to see if AssignedSquadMember's value is a pointer of type ASquadAIController
 				{
+					UE_LOG(LogTemp, Warning, TEXT("Check 4; AssignedSquadMember property exists"));
 					if (AssignedValue->GetCharacter() == nullptr) //Check to see if the value of SquadMember's GetCharacter is a nullptr
 					{
+						UE_LOG(LogTemp, Warning, TEXT("Check 5; AssignedSquadMember->GetCharacter() is nullptr"));
 						for (AActor* Member : SquadMembers)
 						{
 							ASquadAIController* Commando = Cast<ASquadAIController>(Member);
 							if (Commando) //Check to see if the squad member is valid
 							{	
+								UE_LOG(LogTemp, Warning, TEXT("Check 6; individual Commandos."));
 								if (Commando->Room == nullptr) //Check to see if the squad member has an assigned room alread
 								{
+									UE_LOG(LogTemp, Warning, TEXT("Check 7; Commando->Room is nullptr"));
 									AssignedValue = Commando;
 									Commando->Room = Room;
 									Commando->ClearRoom();
@@ -122,6 +131,37 @@ void ASquadPlayerController::CheckRoomValues(UClass* ActorClass, AActor* Room)
 								}
 							}
 						}
+					}
+					else
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Check 5b; AssignedSquadMember->GetCharacter() NOT nullptr."));
+						ACharacter* UnknownCharacter = AssignedValue->GetCharacter();
+						if (UnknownCharacter)
+						{
+							AssignedValue = nullptr;
+							//CheckRoomValues(ActorClass, Room);
+							for (AActor* Member : SquadMembers)
+							{
+								ASquadAIController* Commando = Cast<ASquadAIController>(Member);
+								if (Commando) //Check to see if the squad member is valid
+								{
+									UE_LOG(LogTemp, Warning, TEXT("Check 6; individual Commandos."));
+									if (Commando->Room == nullptr) //Check to see if the squad member has an assigned room alread
+									{
+										UE_LOG(LogTemp, Warning, TEXT("Check 7; Commando->Room is nullptr"));
+										AssignedValue = Commando;
+										Commando->Room = Room;
+										Commando->ClearRoom();
+										return;
+									}
+								}
+
+							}
+						}
+
+
+						return;
+						//UE_LOG(LogTemp, Warning, TEXT("Check 5b; AssignedSquadMember->GetCharacter() NOT nullptr. Character: %s"), *AssignedValue->GetCharacter()->GetName());
 					}
 				}
 			}

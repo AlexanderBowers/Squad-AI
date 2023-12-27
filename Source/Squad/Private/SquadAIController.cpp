@@ -131,7 +131,7 @@ void ASquadAIController::ClearRoom()
 	{
 		FCommandPointy RoomPoint;
 		FVector Test = Room->GetActorLocation();
-		UE_LOG(LogTemp, Warning, TEXT("MyVector: X: %f, Y: %f, Z: %f"), Test.X, Test.Y, Test.Z);
+		UE_LOG(LogTemp, Warning, TEXT("Check 8: Success. X: %f, Y: %f, Z: %f"), Test.X, Test.Y, Test.Z);
 		RoomPoint.Location = Room->GetActorLocation();
 		RoomPoint.Type = FName("Cover");
 		MoveToCommand(RoomPoint);
