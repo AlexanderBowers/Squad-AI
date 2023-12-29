@@ -39,7 +39,11 @@ void ASquadAIController::Tick(float DeltaTime)
 		
 		if (PlayerController->CommandList.Num() > 0)
 		{
-			MoveToCommand(PlayerController->CommandList.Last()); //Get the most recent command and prepare to move to it.
+			if (PlayerController->CommandList.Last().Location != LastCommand.Location)
+			{
+				MoveToCommand(PlayerController->CommandList.Last()); //Get the most recent command and prepare to move to it.
+
+			}
 		}
 		
 		if (FVector::Distance(GetCharacter()->GetActorLocation(), PlayerController->GetPawn()->GetActorLocation()) >= 1000.0f)
@@ -53,20 +57,16 @@ void ASquadAIController::Tick(float DeltaTime)
 
 void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they receive a new command, move to it.
 {
-	if (CommandPoint.Location != LastCommand.Location)
-	{
 		bShouldFollow = false;
 		if (GetCharacter()->bIsCrouched)
 		{
 			GetCharacter()->UnCrouch();
 
 		}
-
 		MoveToLocation(CommandPoint.Location, 25);
 		HandleCommand(CommandPoint);
 		LastCommand = CommandPoint;
 
-	}
 }
 
 void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if they need to crouch, suppress, etc.
