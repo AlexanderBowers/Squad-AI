@@ -40,14 +40,14 @@ void ASquadAIController::Tick(float DeltaTime)
 		if (PlayerController->CommandList.Num() > 0)
 		{
 			MoveToCommand(PlayerController->CommandList.Last()); //Get the most recent command and prepare to move to it.
-			if (FVector::Distance(GetCharacter()->GetActorLocation(), PlayerController->GetPawn()->GetActorLocation()) >= 2000.0f)
-			{
-				bShouldFollow = true;
-				FollowPlayer();
-
-			}
 		}
 		
+		if (FVector::Distance(GetCharacter()->GetActorLocation(), PlayerController->GetPawn()->GetActorLocation()) >= 1000.0f)
+		{
+			bShouldFollow = true;
+			FollowPlayer();
+
+		}
 	}
 }
 
