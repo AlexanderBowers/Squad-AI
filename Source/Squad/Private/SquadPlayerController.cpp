@@ -57,6 +57,18 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 			{
 				CommandPoint.Type = FName(TagType);
 				DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Green, false, 2, 0, 1.f);
+				if (CommandPoint.Type == FName("Investigate"))
+				{
+					USceneComponent* EndLocation = Actor->FindComponentByClass<USceneComponent>();
+					if (EndLocation)
+					{
+						FVector RightLocation = EndLocation->GetComponentLocation();
+						RightLocation.X += 200.f;
+						CommandPoint.Location = RightLocation;
+						DrawDebugSphere(GetWorld(), RightLocation, 20, 8, FColor::Red, false, 2, 0, 1.f);
+						
+					}
+				}
 
 			}
 			else
