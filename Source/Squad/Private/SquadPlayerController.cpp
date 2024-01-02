@@ -66,6 +66,7 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 						RightLocation.X += 200.f;
 						CommandPoint.Location = RightLocation;
 						DrawDebugSphere(GetWorld(), RightLocation, 20, 8, FColor::Red, false, 2, 0, 1.f);
+						return CommandPoint;
 						
 					}
 				}
