@@ -48,6 +48,8 @@ public:
 	void CheckRoomValues(UClass* ActorClass, AActor* Room);
 	UFUNCTION()
 	void AssignRoom(AActor* Room, ASquadAIController* AssignedValue);
+	UFUNCTION()
+	void DeployInvestigate(FCommandPointy CommandPoint);
 
 	
 	virtual void Tick(float DeltatTime) override;
@@ -76,6 +78,7 @@ private:
 	FVector CameraLocation;
 	FRotator CameraRotation;
 	APawn* ControlledPawn;
+	TArray<AActor*> DisposableList;
 	
 };
 

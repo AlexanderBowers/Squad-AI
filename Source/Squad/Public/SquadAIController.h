@@ -31,13 +31,14 @@ public:
 
 	UFUNCTION()
 	void ClearRoom();
+	UFUNCTION()
+	void MoveToCommand(FCommandPointy CommandPoint);
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 
-	UFUNCTION()
-	void MoveToCommand(FCommandPointy CommandPoint);
+	
 	UFUNCTION()
 	void HandleCommand(FCommandPointy CommandPoint);
 	UFUNCTION()

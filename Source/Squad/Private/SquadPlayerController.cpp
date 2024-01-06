@@ -19,6 +19,7 @@ void ASquadPlayerController::BeginPlay()
 	{
 		ControlledPawn = GetPawn();
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASquadAIController::StaticClass(), SquadMembers); // Get all Squad Member controllers.
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASquadAIController::StaticClass(), DisposableList); // Get all Squad Member controllers.
 
 	}
 
@@ -64,8 +65,15 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 					{
 						FVector RightLocation = EndLocation->GetComponentLocation();
 						RightLocation.X += 200.f;
+						RightLocation.Y -= 700.f;
 						CommandPoint.Location = RightLocation;
 						DrawDebugSphere(GetWorld(), RightLocation, 20, 8, FColor::Red, false, 2, 0, 1.f);
+						//FTimerHandle TimerHandle;
+						//FTimerDelegate Delegate;
+						//Delegate.BindUFunction(this, "DeployInvestigate");
+						//GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 5.0f, false, 5.0f);
+						//DeployInvestigate(CommandPoint);
+						UE_LOG(LogTemp, Warning, TEXT("Test 5: Deploy over."))
 						return CommandPoint;
 						
 					}
@@ -166,6 +174,37 @@ void ASquadPlayerController::AssignRoom(AActor* Room, ASquadAIController* Assign
 	}
 }
 
+void ASquadPlayerController::DeployInvestigate(FCommandPointy CommandPoint)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Test 0: DeployInvestigate"));
+	if (DisposableList.Num() > 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Test 1: DisposableList is > 0"));
+		for (int32 Index = DisposableList.Num() - 1; Index >= 0; --Index)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Test 2: Inside loop"));
+			AActor* CurrentActor = DisposableList[Index];
+			ASquadAIController* Commando = Cast<ASquadAIController>(CurrentActor);
+			if (Commando)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Test 3: Cast successful"))
+				Commando->MoveToCommand(CommandPoint);
+				DisposableList.RemoveAt(Index);
+				break;
+			}
+			
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Test 4: Outside loop"));
+		
+		
+
+		// Perform any required actions with CurrentActor
+
+		// Remove the element at the end of the iteration
+		
+	}
+}
+
 void ASquadPlayerController::Tick(float DeltatTime)
 {
 
@@ -217,3 +256,39 @@ void ASquadPlayerController::SetupInputComponent()
 	InputComponent->BindAction("FormUpCommand", IE_Pressed, this, &ASquadPlayerController::FormUpCommand);
 
 }
+
+
+
+//UE_LOG(LogTemp, Warning, TEXT("Test 0: DeployInvestigate"));
+//if (DisposableList.Num() > 0)
+//{
+//	UE_LOG(LogTemp, Warning, TEXT("Test 1: DisposableList is > 0"));
+//	for (int32 Index = DisposableList.Num() - 1; Index >= 0; --Index)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("Test 2: Inside loop"));
+//		AActor* CurrentActor = DisposableList[Index];
+//		ASquadAIController* Commando = Cast<ASquadAIController>(CurrentActor);
+//		if (Commando)
+//		{
+//			UE_LOG(LogTemp, Warning, TEXT("Test 3: Cast successful."));
+//			FCommandPointy CommandPoint;
+//			CommandPoint.Location =
+//				Commando->bShouldFollow = false;
+//			Commando->MoveToLocation(EndLocation, 25.0);
+//			FTimerHandle TimerHandle;
+//			FTimerDelegate Delegate;
+//			Delegate.BindUFunction(this, "DeployInvestigate");
+//			GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 5.0f, false, 5.0f);
+//			DisposableList.RemoveAt(Index);
+//			break;
+//		}
+//
+//	}
+//	UE_LOG(LogTemp, Warning, TEXT("Test 4: Outside loop"));
+//
+//
+//	// Perform any required actions with CurrentActor
+//
+//	// Remove the element at the end of the iteration
+//
+//}
