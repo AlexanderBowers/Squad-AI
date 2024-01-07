@@ -20,7 +20,7 @@ void ASquadPlayerController::BeginPlay()
 		ControlledPawn = GetPawn();
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASquadAIController::StaticClass(), SquadMembers); // Get all Squad Member controllers.
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASquadAIController::StaticClass(), DisposableList); // Get all Squad Member controllers.
-
+		
 	}
 
 }
@@ -203,6 +203,11 @@ void ASquadPlayerController::DeployInvestigate(FCommandPointy CommandPoint)
 		// Remove the element at the end of the iteration
 		
 	}
+}
+
+void ASquadPlayerController::AssignPriorityCommand(FCommandPointy CommandPoint) // Get the first AIController that doesn't have a priority command
+{
+
 }
 
 void ASquadPlayerController::Tick(float DeltatTime)

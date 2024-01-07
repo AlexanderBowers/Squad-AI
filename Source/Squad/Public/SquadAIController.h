@@ -21,6 +21,8 @@ public:
 	TArray<FCommandPointy> LocalCommandList; //In case I need to store multiple commands
 
 	UPROPERTY(EditAnywhere)
+	FCommandPointy PriorityCommand;
+	UPROPERTY(EditAnywhere)
 	bool bShouldFollow = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
 	bool bIsIndoors = false;

@@ -50,6 +50,8 @@ public:
 	void AssignRoom(AActor* Room, ASquadAIController* AssignedValue);
 	UFUNCTION()
 	void DeployInvestigate(FCommandPointy CommandPoint);
+	UFUNCTION()
+	void AssignPriorityCommand(FCommandPointy CommandPoint);
 
 	
 	virtual void Tick(float DeltatTime) override;
