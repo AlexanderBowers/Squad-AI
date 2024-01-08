@@ -29,6 +29,6 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MyInterface")
 	void CheckAssignedMember(FCommandPointy CommandPoint);
 	void SetAssignedMember(ASquadAIController* AssignedSquadMember);
-
+	void ResetAssignedMember();
 
 };

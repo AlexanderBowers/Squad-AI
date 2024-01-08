@@ -57,6 +57,10 @@ void ASquadAIController::Tick(float DeltaTime)
 
 void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they receive a new command, move to it.
 {
+	if (CommandPoint.Type == FName("Return"))
+	{
+		ResetPriorityCommand();
+	}
 	if (bHasPriority == true)
 	{
 		return;
@@ -94,6 +98,7 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if t
 		}
 		if (CommandPoint.Type ==  FName("Return"))
 		{
+			ResetPriorityCommand();
 			bShouldFollow = true;
 		}
 		Delegate.Unbind();
@@ -107,6 +112,8 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if t
 
 void ASquadAIController::FollowPlayer()
 {
+	ResetPriorityCommand();
+
 	if (GetCharacter()->bIsCrouched)
 	{
 		GetCharacter()->UnCrouch();
