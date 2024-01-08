@@ -28,7 +28,9 @@ class SQUAD_API IAssignMemberInterface
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MyInterface")
 	void CheckAssignedMember(FCommandPointy CommandPoint);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MyInterface")
 	void SetAssignedMember(ASquadAIController* AssignedSquadMember);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MyInterface")
 	void ResetAssignedMember();
 
 };
