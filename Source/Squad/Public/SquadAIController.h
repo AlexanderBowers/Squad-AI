@@ -20,12 +20,16 @@ public:
 	FCommandPointy LastCommand;
 	TArray<FCommandPointy> LocalCommandList; //In case I need to store multiple commands
 
+
 	UPROPERTY(EditAnywhere)
 	FCommandPointy PriorityCommand;
 	UPROPERTY(EditAnywhere)
 	bool bShouldFollow = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
 	bool bIsIndoors = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bHasPriority = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
 	AActor* Building;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
@@ -35,6 +39,12 @@ public:
 	void ClearRoom();
 	UFUNCTION()
 	void MoveToCommand(FCommandPointy CommandPoint);
+
+	UFUNCTION(BlueprintCallable)
+	void ResetPriorityCommand();
+
+
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

@@ -57,6 +57,10 @@ void ASquadAIController::Tick(float DeltaTime)
 
 void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they receive a new command, move to it.
 {
+	if (bHasPriority == true)
+	{
+		return;
+	}
 	if (CommandPoint.Location.X == 0.00f)
 	{
 		return;
@@ -143,6 +147,16 @@ void ASquadAIController::ClearRoom()
 	}
 
 }
+
+void ASquadAIController::ResetPriorityCommand()
+{
+	FVector ResetLocation = { 0.00f, 0.00f, 0.00f };
+	PriorityCommand.Location = ResetLocation;
+	bShouldFollow = true;
+	bHasPriority = false;
+	return;
+}
+
 
 
 	//TODO: Allow multiple Squad AI to respond to command. DONE!
