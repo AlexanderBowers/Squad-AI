@@ -52,6 +52,8 @@ public:
 	void DeployInvestigate(FCommandPointy CommandPoint);
 	UFUNCTION()
 	void AssignPriorityCommand(FCommandPointy CommandPoint);
+	UFUNCTION(BlueprintCallable)
+	ASquadAIController* GetAvailableMember(FCommandPointy CommandPoint);
 
 	
 	virtual void Tick(float DeltatTime) override;

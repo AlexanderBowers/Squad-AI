@@ -57,6 +57,10 @@ void ASquadAIController::Tick(float DeltaTime)
 
 void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they receive a new command, move to it.
 {
+	if (CommandPoint.Location.X == 0.00f)
+	{
+		return;
+	}
 		bShouldFollow = false;
 		if (GetCharacter()->bIsCrouched)
 		{

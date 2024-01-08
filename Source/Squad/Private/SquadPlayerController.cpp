@@ -10,6 +10,7 @@
 #include "SquadAIController.h"
 #include <Kismet/GameplayStatics.h>
 #include "UObject/Class.h"
+#include "AssignMemberInterface.h"
 #include "GameFramework/Character.h"
 
 void ASquadPlayerController::BeginPlay()
@@ -68,17 +69,19 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 						RightLocation.Y -= 700.f;
 						CommandPoint.Location = RightLocation;
 						DrawDebugSphere(GetWorld(), RightLocation, 20, 8, FColor::Red, false, 2, 0, 1.f);
-						//FTimerHandle TimerHandle;
-						//FTimerDelegate Delegate;
-						//Delegate.BindUFunction(this, "DeployInvestigate");
-						//GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 5.0f, false, 5.0f);
-						//DeployInvestigate(CommandPoint);
-						UE_LOG(LogTemp, Warning, TEXT("Test 5: Deploy over."))
 						return CommandPoint;
 						
 					}
 				}
-
+				if (CommandPoint.Type == FName("FirePoint"))
+				{
+					//if (Actor->GetClass()->ImplementsInterface(UAssignMemberInterface::StaticClass() ))
+					if(Actor->Implements<UAssignMemberInterface>())
+					{
+						IAssignMemberInterface::Execute_CheckAssignedMember(Actor, CommandPoint);
+						CommandPoint.Location.X = 0.00f;
+					}
+				}
 			}
 			else
 			{
@@ -208,6 +211,27 @@ void ASquadPlayerController::DeployInvestigate(FCommandPointy CommandPoint)
 void ASquadPlayerController::AssignPriorityCommand(FCommandPointy CommandPoint) // Get the first AIController that doesn't have a priority command
 {
 
+}
+
+ASquadAIController* ASquadPlayerController::GetAvailableMember(FCommandPointy CommandPoint)
+{
+	for (AActor* Actor : SquadMembers)
+	{
+		ASquadAIController* SquadMember = Cast<ASquadAIController>(Actor);
+		if (SquadMember)
+		{
+			if (SquadMember->PriorityCommand.Location.X == 0.00)
+			{
+				SquadMember->PriorityCommand.Location = CommandPoint.Location;
+				SquadMember->PriorityCommand.Type = CommandPoint.Type;
+				SquadMember->MoveToCommand(CommandPoint);
+				return SquadMember;
+			}
+
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("No available members found."))
+	return nullptr;
 }
 
 void ASquadPlayerController::Tick(float DeltatTime)
