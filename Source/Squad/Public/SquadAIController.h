@@ -29,6 +29,8 @@ public:
 	bool bIsIndoors = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bHasPriority = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AActor* AssignedPosition;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Indoors")
 	AActor* Building;

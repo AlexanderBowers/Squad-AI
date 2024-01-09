@@ -4,7 +4,7 @@
 #include "SquadAIController.h"
 #include "SquadPlayerController.h"
 #include "Engine/EngineTypes.h"
-
+#include "AssignMemberInterface.h"
 #include "CommandPoint.h"
 #include "SquadPlayerController.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -159,6 +159,14 @@ void ASquadAIController::ResetPriorityCommand()
 {
 	FVector ResetLocation = { 0.00f, 0.00f, 0.00f };
 	PriorityCommand.Location = ResetLocation;
+	if (AssignedPosition)
+	{
+		if (AssignedPosition->Implements<UAssignMemberInterface>())
+		{
+			IAssignMemberInterface::Execute_ResetAssignedMember(AssignedPosition);
+		}
+	}
+	AssignedPosition = nullptr;
 	bShouldFollow = true;
 	bHasPriority = false;
 	return;
