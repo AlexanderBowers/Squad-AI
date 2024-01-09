@@ -40,44 +40,49 @@ FCommandPointy ASquadPlayerController::CreateCommandPointy(FHitResult HitResult)
 }
 
 FCommandPointy ASquadPlayerController::AssignLocation(FCommandPointy CommandPoint, FHitResult HitResult)
-{
+{  //Starting location of a CommandPoint to be given to an AI. This may change depending on its type.
 	CommandPoint.Location = HitResult.Location;
 	return CommandPoint;
 
 }
 
 FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, FHitResult HitResult)
-{
+{ //CommandPoints can have a variety of types. 
+  //Move: self explanatory. This is the default fallback.
+  //Cover: crouch at location; this is set in SquadAIController::HandleCommand
+  //Investigate: CommandPoint.Location gets set to a specific component.
+  //FirePoint: One AI gets set this as a priority to move to or recalled from. See SquadPlayerController::GetAvailableMembers() for assignment.
+  //Return: used in SquadPlayerController::FormUpCommand. Otherwise used as a backup if there was no actor found from the HitResult.
+  
 	AActor* Actor = HitResult.GetActor();
 	if (Actor)
 	{
 		UActorComponent* Component = Actor->FindComponentByClass<UCommandComponent>();
 		if (Component)
 		{
-			FString TagType = Component->ComponentTags[0].ToString();
+			FString TagType = Component->ComponentTags[0].ToString(); //Always look for the first tag on an actor to determine the type of CommandPoint.
 			if (TagType.Len() > 0)
 			{
 				CommandPoint.Type = FName(TagType);
 				DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Green, false, 2, 0, 1.f);
-				if (CommandPoint.Type == FName("Investigate"))
+
+				if (CommandPoint.Type == FName("Investigate")) //Grab a static mesh called EndLocation on the actor. That will be the new location to move to.
 				{
-					UStaticMeshComponent* EndLocation = Cast<UStaticMeshComponent>(Actor->GetDefaultSubobjectByName(TEXT("EndLocation")));
+					UStaticMeshComponent* EndLocation = Cast<UStaticMeshComponent>(Actor->GetDefaultSubobjectByName(TEXT("EndLocation"))); 
 					if (EndLocation)
 					{
 						FVector RightLocation = EndLocation->GetComponentLocation();
 						CommandPoint.Location = RightLocation;
-						DrawDebugSphere(GetWorld(), RightLocation, 20, 8, FColor::Red, false, 2, 0, 1.f);
 						return CommandPoint;
 						
 					}
 				}
 				if (CommandPoint.Type == FName("FirePoint"))
 				{
-					//if (Actor->GetClass()->ImplementsInterface(UAssignMemberInterface::StaticClass() ))
 					if(Actor->Implements<UAssignMemberInterface>())
-					{
-						IAssignMemberInterface::Execute_CheckAssignedMember(Actor, CommandPoint);
-						CommandPoint.Location.X = 0.00f;
+					{	//We're checking to see if this actor has an assigned member. If not, assign one through SquadPlayerController::GetAvailableMember. If it already does, recall them.
+						IAssignMemberInterface::Execute_CheckAssignedMember(Actor, CommandPoint); 
+						CommandPoint.Location.X = 0.00f; //This is to restrict other AI other than the one specified in GetAvailableMember from moving to this location.
 					}
 				}
 			}
@@ -100,7 +105,7 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 	//If there is no actor hit, return to the player
 	UE_LOG(LogTemp, Warning, TEXT("No actor found. Returning to player."))
 	CommandPoint.Location = this->GetPawn()->GetActorLocation();
-	CommandPoint.Type = FName("Move");
+	CommandPoint.Type = FName("Return");
 	return CommandPoint;
 
 }
@@ -123,7 +128,7 @@ TArray<AActor *> ASquadPlayerController::GetRooms(AActor* Building)
 	return RoomsInBuilding;
 }
 
-void ASquadPlayerController::CheckRoomValues(UClass* ActorClass, AActor* Room)
+void ASquadPlayerController::CheckRoomValues(UClass* ActorClass, AActor* Room)  
 {
 	FProperty* IsCleared = ActorClass->FindPropertyByName(TEXT("bIsCleared"));
 	if (IsCleared) // Checking to see if there is a property by name of bIsCleared
@@ -175,8 +180,9 @@ void ASquadPlayerController::AssignRoom(AActor* Room, ASquadAIController* Assign
 	}
 }
 
-void ASquadPlayerController::DeployInvestigate(FCommandPointy CommandPoint)
-{
+void ASquadPlayerController::DeployInvestigate(FCommandPointy CommandPoint)  
+{ //I think this was a prototype for my Investigate CommandPoint type. Safe to delete?
+
 	UE_LOG(LogTemp, Warning, TEXT("Test 0: DeployInvestigate"));
 	if (DisposableList.Num() > 0)
 	{
@@ -206,22 +212,22 @@ void ASquadPlayerController::DeployInvestigate(FCommandPointy CommandPoint)
 	}
 }
 
-void ASquadPlayerController::AssignPriorityCommand(FCommandPointy CommandPoint) // Get the first AIController that doesn't have a priority command
+void ASquadPlayerController::AssignPriorityCommand(FCommandPointy CommandPoint) // Could probably be part of refactoring GetAvailableMember.
 {
 
 }
 
-ASquadAIController* ASquadPlayerController::GetAvailableMember(FCommandPointy CommandPoint)
-{
+ASquadAIController* ASquadPlayerController::GetAvailableMember(FCommandPointy CommandPoint) 
+{  // Get the first AIController that doesn't have a priority command
+
 	FVector CommandLocation = CommandPoint.Location;
-	float BestDistance = 100000000;
+	float BestDistance = 100000000; //Arbitrary number.
 	ASquadAIController* ClosestMember = nullptr;
 	for (AActor* Actor : SquadMembers)
 	{
 		ASquadAIController* SquadMember = Cast<ASquadAIController>(Actor);
 		if (SquadMember)
 		{
-
 			if (SquadMember->PriorityCommand.Location.X == 0.00)
 			{
 				FVector MemberLocation = SquadMember->GetCharacter()->GetActorLocation();
@@ -229,13 +235,11 @@ ASquadAIController* ASquadPlayerController::GetAvailableMember(FCommandPointy Co
 				{
 					BestDistance = FVector::Distance(MemberLocation, CommandLocation);
 					ClosestMember = SquadMember;
-				}
-				
+				}	
 			}
-
 		}
 	}
-	if (ClosestMember)
+	if (ClosestMember) //AIController gets all the info he needs to move to the spot. Assignment of AssignedLocation pointer set in the CheckAssignedMember event.
 	{
 		ClosestMember->PriorityCommand.Location = CommandPoint.Location;
 		ClosestMember->PriorityCommand.Type = CommandPoint.Type;
@@ -253,7 +257,7 @@ void ASquadPlayerController::Tick(float DeltatTime)
 
 void ASquadPlayerController::MoveUpCommand()
 {
-	//Line trace to a location. On collision, create a FCommandPointy then add it to the list.
+	//Use a line trace to find a location for AI to move to.
 
 	if (ControlledPawn)
 	{
@@ -267,8 +271,7 @@ void ASquadPlayerController::MoveUpCommand()
 		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, End, ECC_Visibility, CollisionParams);
 		if (bHit)
 		{
-			//if we get a collision, create a FCommandPointy. 
-			//If the collided actor has a Command Component, get its type and add to the CommandList.
+			//CreateCommandPointy checks to see if the hitresult actor has a Command Component and its type.
 			FCommandPointy CommandPoint = CreateCommandPointy(HitResult);
 			CommandList.Add(CommandPoint);
 			
@@ -276,7 +279,7 @@ void ASquadPlayerController::MoveUpCommand()
 	}
 }
 
-void ASquadPlayerController::FormUpCommand()
+void ASquadPlayerController::FormUpCommand() //Generic recall function to return all AI regardless if they have assgned locations.
 {
 	if (ControlledPawn)
 	{
