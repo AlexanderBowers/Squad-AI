@@ -26,11 +26,13 @@ class SQUAD_API IAssignMemberInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MyInterface")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AssignMember")
 	void CheckAssignedMember(FCommandPointy CommandPoint);
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MyInterface")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AssignMember")
 	void SetAssignedMember(ASquadAIController* AssignedSquadMember);
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "MyInterface")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AssignMember")
 	void ResetAssignedMember();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "EndLocation")
+	void SetDesiredEndLocation(FCommandPointy CommandPoint);
 
 };
