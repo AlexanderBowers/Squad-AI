@@ -213,22 +213,36 @@ void ASquadPlayerController::AssignPriorityCommand(FCommandPointy CommandPoint) 
 
 ASquadAIController* ASquadPlayerController::GetAvailableMember(FCommandPointy CommandPoint)
 {
+	FVector CommandLocation = CommandPoint.Location;
+	float BestDistance = 100000000;
+	ASquadAIController* ClosestMember = nullptr;
 	for (AActor* Actor : SquadMembers)
 	{
 		ASquadAIController* SquadMember = Cast<ASquadAIController>(Actor);
 		if (SquadMember)
 		{
+
 			if (SquadMember->PriorityCommand.Location.X == 0.00)
 			{
-				SquadMember->PriorityCommand.Location = CommandPoint.Location;
-				SquadMember->PriorityCommand.Type = CommandPoint.Type;
-				SquadMember->MoveToCommand(CommandPoint);
-				return SquadMember;
+				FVector MemberLocation = SquadMember->GetCharacter()->GetActorLocation();
+				if (FVector::Distance(MemberLocation, CommandLocation) <= BestDistance)
+				{
+					BestDistance = FVector::Distance(MemberLocation, CommandLocation);
+					ClosestMember = SquadMember;
+				}
+				
 			}
 
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("No available members found."))
+	if (ClosestMember)
+	{
+		ClosestMember->PriorityCommand.Location = CommandPoint.Location;
+		ClosestMember->PriorityCommand.Type = CommandPoint.Type;
+		ClosestMember->MoveToCommand(CommandPoint);
+		return ClosestMember;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("No member found! returning nullptr"));
 	return nullptr;
 }
 
@@ -283,39 +297,3 @@ void ASquadPlayerController::SetupInputComponent()
 	InputComponent->BindAction("FormUpCommand", IE_Pressed, this, &ASquadPlayerController::FormUpCommand);
 
 }
-
-
-
-//UE_LOG(LogTemp, Warning, TEXT("Test 0: DeployInvestigate"));
-//if (DisposableList.Num() > 0)
-//{
-//	UE_LOG(LogTemp, Warning, TEXT("Test 1: DisposableList is > 0"));
-//	for (int32 Index = DisposableList.Num() - 1; Index >= 0; --Index)
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("Test 2: Inside loop"));
-//		AActor* CurrentActor = DisposableList[Index];
-//		ASquadAIController* Commando = Cast<ASquadAIController>(CurrentActor);
-//		if (Commando)
-//		{
-//			UE_LOG(LogTemp, Warning, TEXT("Test 3: Cast successful."));
-//			FCommandPointy CommandPoint;
-//			CommandPoint.Location =
-//				Commando->bShouldFollow = false;
-//			Commando->MoveToLocation(EndLocation, 25.0);
-//			FTimerHandle TimerHandle;
-//			FTimerDelegate Delegate;
-//			Delegate.BindUFunction(this, "DeployInvestigate");
-//			GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 5.0f, false, 5.0f);
-//			DisposableList.RemoveAt(Index);
-//			break;
-//		}
-//
-//	}
-//	UE_LOG(LogTemp, Warning, TEXT("Test 4: Outside loop"));
-//
-//
-//	// Perform any required actions with CurrentActor
-//
-//	// Remove the element at the end of the iteration
-//
-//}
