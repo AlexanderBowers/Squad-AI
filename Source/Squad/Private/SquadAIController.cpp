@@ -13,6 +13,10 @@
 void ASquadAIController::BeginPlay()
 {
 	Super::BeginPlay();
+	if (this->GetPawn()->Implements<UAssignMemberInterface>())
+	{
+		IAssignMemberInterface::Execute_SetBehaviorTree(this->GetPawn(), this);
+	}
 	if (GetWorld()->GetFirstPlayerController())
 	{
 		PlayerController = GetWorld()->GetFirstPlayerController<ASquadPlayerController>();

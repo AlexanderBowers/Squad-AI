@@ -34,5 +34,6 @@ public:
 	void ResetAssignedMember();
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "EndLocation")
 	void SetDesiredEndLocation(FCommandPointy CommandPoint);
-
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Setup")
+	void SetBehaviorTree(ASquadAIController* TheController);
 };
