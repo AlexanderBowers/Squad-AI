@@ -9,6 +9,10 @@
 #include "SquadPlayerController.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "GameFramework/Character.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 void ASquadAIController::BeginPlay()
 {
@@ -130,6 +134,18 @@ void ASquadAIController::FollowPlayer()
 	Delegate.Unbind();
 }
 
+void ASquadAIController::SetupPerceptionSystem()
+{
+	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
+	SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component")));
+	SightConfig->SightRadius = 5000.0f;
+
+	GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
+	GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &ASquadAIController::OnUpdated);
+	GetPerceptionComponent()->ConfigureSense(*SightConfig);
+
+}
+
 void ASquadAIController::ClearRoom()
 {
 	if (Room != nullptr)
@@ -174,6 +190,14 @@ void ASquadAIController::ResetPriorityCommand()
 	bShouldFollow = true;
 	bHasPriority = false;
 	return;
+}
+
+void ASquadAIController::OnUpdated(AActor* NewActor)
+{
+	if (Implements<UAssignMemberInterface>())
+	{
+		IAssignMemberInterface::Execute_UpdatePerception(this->GetPawn(), NewActor);
+	}
 }
 
 

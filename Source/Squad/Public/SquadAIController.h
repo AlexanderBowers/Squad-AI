@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "SquadPlayerController.h"
 #include "TimerManager.h"
+#include "Perception/AIPerceptionComponent.h"
 #include "SquadAIController.generated.h"
 
 /**
@@ -45,11 +46,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetPriorityCommand();
 
+	UFUNCTION(BlueprintCallable)
+	void OnUpdated(AActor* NewActor);
+
 
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	class UAIPerceptionComponent* AIPerceptionComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	class UAISenseConfig_Sight* SightConfig;
+
 
 
 	
@@ -64,6 +74,8 @@ private:
 	ASquadPlayerController* PlayerController;
 	UPROPERTY()
 	FTimerHandle TimerHandle;
+
+	void SetupPerceptionSystem();
 	
 
 };
