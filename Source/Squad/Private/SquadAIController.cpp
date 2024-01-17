@@ -141,7 +141,7 @@ void ASquadAIController::SetupPerceptionSystem()
 	SightConfig->SightRadius = 5000.0f;
 
 	GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
-	GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &ASquadAIController::OnUpdated);
+	//GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &ASquadAIController::OnUpdated);
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 
 }
