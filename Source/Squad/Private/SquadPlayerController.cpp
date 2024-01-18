@@ -256,6 +256,14 @@ void ASquadPlayerController::Tick(float DeltatTime)
 
 }
 
+void ASquadPlayerController::FireProjectile()
+{
+	if (Implements<UAssignMemberInterface>())
+	{
+		IAssignMemberInterface::Execute_FireProjectile(this);
+	}
+}
+
 void ASquadPlayerController::MoveUpCommand()
 {
 	//Use a line trace to find a location for AI to move to.
@@ -299,5 +307,6 @@ void ASquadPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("MoveUpCommand", IE_Pressed, this, &ASquadPlayerController::MoveUpCommand);
 	InputComponent->BindAction("FormUpCommand", IE_Pressed, this, &ASquadPlayerController::FormUpCommand);
+	InputComponent->BindAction("FireProjectile", IE_Pressed, this, &ASquadPlayerController::FireProjectile);
 
 }

@@ -40,4 +40,6 @@ public:
 	void SetNewTarget(AActor* NewTarget);
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Perception")
 	void UpdatePerception(AActor* NewActor);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
+	void FireProjectile();
 };

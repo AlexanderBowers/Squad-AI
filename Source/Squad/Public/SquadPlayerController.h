@@ -61,6 +61,8 @@ public:
 	virtual void Tick(float DeltatTime) override;
 
 	UFUNCTION()
+	void FireProjectile();
+	UFUNCTION()
 	void MoveUpCommand();
 	UFUNCTION(BlueprintCallable)
 	void FormUpCommand();
