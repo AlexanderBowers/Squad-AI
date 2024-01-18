@@ -64,6 +64,7 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 			if (TagType.Len() > 0)
 			{
 				CommandPoint.Type = FName(TagType);
+				CommandPoint.OwnerActor = Actor;
 				DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Green, false, 2, 0, 1.f);
 
 				if (CommandPoint.Type == FName("Investigate")) //Grab a static mesh called EndLocation on the actor. That will be the new location to move to.

@@ -36,7 +36,8 @@ public:
 	void SetDesiredEndLocation(FCommandPointy CommandPoint);
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Setup")
 	void SetBehaviorTree(ASquadAIController* TheController);
-
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
+	void SetNewTarget(AActor* NewTarget);
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Perception")
 	void UpdatePerception(AActor* NewActor);
 };

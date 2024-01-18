@@ -20,6 +20,8 @@ public:
 	FVector Location;
 	UPROPERTY(VisibleAnywhere)
 	FName Type;
+	UPROPERTY(VisibleAnywhere)
+	AActor* OwnerActor;
 
 protected:
 	// Called when the game starts

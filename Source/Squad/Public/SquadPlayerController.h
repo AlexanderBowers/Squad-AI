@@ -21,6 +21,8 @@ struct FCommandPointy
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AActor* OwnerActor;
 };
 
 UCLASS()

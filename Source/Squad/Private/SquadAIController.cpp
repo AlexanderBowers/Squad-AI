@@ -65,6 +65,17 @@ void ASquadAIController::Tick(float DeltaTime)
 
 void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they receive a new command, move to it.
 {
+	if (CommandPoint.Type == FName("Target"))
+	{
+		if (this->GetPawn()->Implements<UAssignMemberInterface>())
+		{
+			if (CommandPoint.OwnerActor != nullptr)
+			{
+				IAssignMemberInterface::Execute_SetNewTarget(this->GetPawn(), CommandPoint.OwnerActor);
+				return;
+			}
+		}
+	}
 	if (CommandPoint.Type == FName("Return"))
 	{
 		ResetPriorityCommand();
