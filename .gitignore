@@ -12,3 +12,11 @@ Saved
 *.suo
 *.xcodeproj
 *.xcworkspace
+Content/FantasyBundle/Maps/Demonstration_Castle.umap
+Content/FantasyBundle/Maps/Demonstration_Castle_BuiltData.uasset
+Content/FantasyBundle/Maps/Demonstration_Cave.umap
+Content/FantasyBundle/Maps/Demonstration_Village.umap
+Content/FantasyBundle/Maps/Demonstration_Cave_BuiltData.uasset
+Content/FantasyBundle/Maps/Demonstration_Village_BuiltData.uasset
+Content/FantasyBundle/Maps/Overview_Castle.umap
+Content/FantasyBundle/Maps/Overview_Castle_BuiltData.uasset
