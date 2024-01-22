@@ -94,7 +94,7 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they re
 			GetCharacter()->UnCrouch();
 
 		}
-		MoveToLocation(CommandPoint.Location, 25);
+		MoveToLocation(CommandPoint.Location, 0);
 		HandleCommand(CommandPoint);
 		LastCommand = CommandPoint;
 
