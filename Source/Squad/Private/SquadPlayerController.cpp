@@ -7,6 +7,7 @@
 #include "Components.h"
 #include "Engine/Engine.h"
 #include "CommandComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "SquadAIController.h"
 #include <Kismet/GameplayStatics.h>
 #include "UObject/Class.h"
@@ -260,6 +261,12 @@ ASquadAIController* ASquadPlayerController::GetAvailableMember(FCommandPointy Co
 		ClosestMember->PriorityCommand.Location = CommandPoint.Location;
 		ClosestMember->PriorityCommand.Type = CommandPoint.Type;
 		ClosestMember->MoveToCommand(CommandPoint);
+		UBlackboardComponent* Blackboard = ClosestMember->GetBlackboardComponent();
+		if (Blackboard)
+		{
+			Blackboard->SetValueAsBool(FName("bIsAssigned"), true);
+			UE_LOG(LogTemp, Warning, TEXT("made it!!!"));
+		}
 		return ClosestMember;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("No member found! returning nullptr"));
