@@ -70,11 +70,14 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 
 				if (CommandPoint.Type == FName("Detonate"))
 				{
+					if (Actor->Implements<UAssignMemberInterface>())
+					{
 					UStaticMeshComponent* BombPoint = Cast<UStaticMeshComponent>(Actor->GetDefaultSubobjectByName(TEXT("BombLocation")));
 					if (BombPoint)
 					{
 						IAssignMemberInterface::Execute_DetonateBomb(Actor, CommandPoint);
 						CommandPoint.Location.X = 0.00f;
+					}
 					}
 				}
 
