@@ -49,6 +49,7 @@ FCommandPointy ASquadPlayerController::AssignLocation(FCommandPointy CommandPoin
 FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, FHitResult HitResult)
 { //CommandPoints can have a variety of types. 
   //Move: self explanatory. This is the default fallback.
+  //Detonate: One AI temporarily has this set as a priority. They will place a bomb then blow it up in a few seconds.
   //Cover: crouch at location; this is set in SquadAIController::HandleCommand
   //Investigate: CommandPoint.Location gets set to a specific component.
   //FirePoint: One AI gets set this as a priority to move to or recalled from. See SquadPlayerController::GetAvailableMembers() for assignment.
@@ -66,6 +67,16 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 				CommandPoint.Type = FName(TagType);
 				CommandPoint.OwnerActor = Actor;
 				DrawDebugSphere(GetWorld(), HitResult.Location, 20, 8, FColor::Green, false, 2, 0, 1.f);
+
+				if (CommandPoint.Type == FName("Detonate"))
+				{
+					UStaticMeshComponent* BombPoint = Cast<UStaticMeshComponent>(Actor->GetDefaultSubobjectByName(TEXT("BombLocation")));
+					if (BombPoint)
+					{
+						IAssignMemberInterface::Execute_DetonateBomb(Actor, CommandPoint);
+						CommandPoint.Location.X = 0.00f;
+					}
+				}
 
 				if (CommandPoint.Type == FName("Investigate")) //Grab a static mesh called EndLocation on the actor. That will be the new location to move to.
 				{

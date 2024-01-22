@@ -42,4 +42,6 @@ public:
 	void UpdatePerception(AActor* NewActor);
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
 	void FireProjectile();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "AssignMember")
+	void DetonateBomb(FCommandPointy CommandPoint);
 };
