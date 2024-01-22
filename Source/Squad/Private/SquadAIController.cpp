@@ -8,6 +8,7 @@
 #include "CommandPoint.h"
 #include "SquadPlayerController.h"
 #include "Navigation/PathFollowingComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -200,6 +201,11 @@ void ASquadAIController::ResetPriorityCommand()
 	AssignedPosition = nullptr;
 	bShouldFollow = true;
 	bHasPriority = false;
+	UBlackboardComponent* newBlackboard = this->GetBlackboardComponent();
+	if (newBlackboard)
+	{
+		newBlackboard->SetValueAsBool(FName("bIsAssigned"), false);
+	}
 	return;
 }
 
