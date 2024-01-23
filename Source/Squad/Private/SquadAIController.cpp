@@ -208,7 +208,6 @@ void ASquadAIController::ResetPriorityCommand()
 	}
 	return;
 }
-
 void ASquadAIController::OnUpdated(AActor* NewActor)
 {
 	if (Implements<UAssignMemberInterface>())

@@ -50,7 +50,7 @@ FCommandPointy ASquadPlayerController::AssignLocation(FCommandPointy CommandPoin
 FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, FHitResult HitResult)
 { //CommandPoints can have a variety of types. 
   //Move: self explanatory. This is the default fallback.
-  //Detonate: One AI temporarily has this set as a priority. They will place a bomb then blow it up in a few seconds.
+  //Detonate: One AI temporarily has this set as a priority. They will place a bomb then return. Selecting this again will blow up the object.
   //Cover: crouch at location; this is set in SquadAIController::HandleCommand
   //Investigate: CommandPoint.Location gets set to a specific component.
   //FirePoint: One AI gets set this as a priority to move to or recalled from. See SquadPlayerController::GetAvailableMembers() for assignment.
@@ -76,7 +76,6 @@ FCommandPointy ASquadPlayerController::AssignType(FCommandPointy CommandPoint, F
 						UStaticMeshComponent* BombPoint = Cast<UStaticMeshComponent>(Actor->GetDefaultSubobjectByName(TEXT("BombLocation")));
 						if (BombPoint)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Detonate detected!"));
 							IAssignMemberInterface::Execute_CheckAssignedMember(Actor, CommandPoint);
 							CommandPoint.Location.X = 0.00f;
 						}

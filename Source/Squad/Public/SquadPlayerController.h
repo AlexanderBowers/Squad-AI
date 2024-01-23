@@ -80,7 +80,7 @@ public:
 private:
 
 	UPROPERTY(EditAnywhere)
-	float MaxRange = 1000;
+	float MaxRange = 2000;
 	UPROPERTY(EditAnywhere)
 
 	FVector CameraLocation;
