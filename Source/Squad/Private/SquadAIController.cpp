@@ -66,6 +66,7 @@ void ASquadAIController::Tick(float DeltaTime)
 
 void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they receive a new command, move to it.
 {
+	UE_LOG(LogTemp, Warning, TEXT("Destination: %s"), *CommandPoint.Location.ToString());
 	if (CommandPoint.Type == FName("Target"))
 	{
 		if (this->GetPawn()->Implements<UAssignMemberInterface>())
@@ -83,10 +84,12 @@ void ASquadAIController::MoveToCommand(FCommandPointy CommandPoint) //If they re
 	}
 	if (bHasPriority == true)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("HasPriority"));
 		return;
 	}
 	if (CommandPoint.Location.X == 0.00f)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("BadLocation."));
 		return;
 	}
 		bShouldFollow = false;
@@ -110,6 +113,7 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if t
 	float DistanceToCommand = FVector::Distance(GetPawn()->GetActorLocation(), CommandPoint.Location);
 	if (DistanceToCommand <= DistanceThreshold)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Distance threshold met."));
 		StopMovement();
 		if (CommandPoint.Type == FName("Cover")) // trying to convert this to switch statement
 		{ 
@@ -125,7 +129,8 @@ void ASquadAIController::HandleCommand(FCommandPointy CommandPoint) //Check if t
 	}
 	else
 	{
-		GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 2.0f, false, 0.0f);
+		UE_LOG(LogTemp, Warning, TEXT("Setting delegate"));
+		GetWorldTimerManager().SetTimer(TimerHandle, Delegate, 2000.0f, false, 0.0f);
 
 	}
 }
@@ -160,8 +165,10 @@ void ASquadAIController::SetupPerceptionSystem()
 
 void ASquadAIController::ClearRoom()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ClearRoom start"));
 	if (Room != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Room != nullptr"));
 		bShouldFollow = false;
 		FCommandPointy RoomPoint;
 		FVector Test = Room->GetActorLocation();

@@ -133,6 +133,7 @@ TArray<AActor *> ASquadPlayerController::GetRooms(AActor* Building)
 	//If it's not cleared, check if it's assigned.
 	//If it isn't assigned, assign the first SquadMember who doesn't have a room assigned.
 	Building->GetAllChildActors(RoomsInBuilding);
+	UE_LOG(LogTemp, Warning, TEXT("Start GetRooms"));
 	for (AActor* Room : RoomsInBuilding)
 	{
 		FVector RoomLocation = Room->GetActorLocation();
@@ -161,11 +162,13 @@ void ASquadPlayerController::CheckRoomValues(UClass* ActorClass, AActor* Room)
 				{
 					if (AssignedValue->GetCharacter() == nullptr) //Check to see if the value of SquadMember's GetCharacter is a nullptr
 					{
+						UE_LOG(LogTemp, Warning, TEXT("CheckRoomValues->AssignRoom"));
 						AssignRoom(Room, AssignedValue);
 						
 					}
 					else
 					{
+						UE_LOG(LogTemp, Warning, TEXT("CheckRoomValuesSafety->AssignRoom"));
 						AssignedValue = nullptr;
 						AssignRoom(Room, AssignedValue);
 
@@ -185,6 +188,7 @@ void ASquadPlayerController::AssignRoom(AActor* Room, ASquadAIController* Assign
 		{
 			if (Commando->Room == nullptr) //Check to see if the squad member has an assigned room alread
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Commando->Room == nullptr"));
 				AssignedValue = Commando;
 				Commando->Room = Room;
 				Commando->ClearRoom();
